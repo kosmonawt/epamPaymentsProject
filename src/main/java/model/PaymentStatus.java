@@ -1,4 +1,4 @@
-package controller.model;
+package model;
 
 enum PaymentStatus {
 
@@ -6,6 +6,9 @@ enum PaymentStatus {
     IN_PROGRESS("In progress"),
     DONE("Done");
 
-    PaymentStatus(String s) {
+    public final String status;
+
+    PaymentStatus(String status) {
+        this.status = status;
     }
 }

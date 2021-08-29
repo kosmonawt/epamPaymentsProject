@@ -1,4 +1,4 @@
-package controller.database;
+package service;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
@@ -6,9 +6,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-public class DBConnectionPool {
-    private static Logger LOGGER = Logger.getLogger(DBConnectionPool.class.getSimpleName());
-    private static String CONNECTION_URL = "jdbc:postgresql://localhost/test";
+public class PoolConnectionService {
+    private static Logger LOGGER = Logger.getLogger(PoolConnectionService.class.getSimpleName());
+    private static String CONNECTION_URL = "jdbc:postgresql://localhost/payments";
     private static String DB_USERNAME = "postgres";
     private static String DB_PASSWORD = "kolobok";
 
@@ -29,7 +29,7 @@ public class DBConnectionPool {
         return dataSource.getConnection();
     }
 
-    private DBConnectionPool() {
+    private PoolConnectionService() {
     }
 
 }

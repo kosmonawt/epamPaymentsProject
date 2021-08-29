@@ -1,4 +1,4 @@
-package controller.model;
+package model;
 
 import javax.security.enterprise.credential.Password;
 import java.util.Arrays;

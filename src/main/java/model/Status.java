@@ -1,4 +1,4 @@
-package controller.model;
+package model;
 
 public enum Status {
     ACTIVE,

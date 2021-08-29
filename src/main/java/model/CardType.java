@@ -1,4 +1,4 @@
-package controller.model;
+package model;
 
 enum CardType {
     VISA,
