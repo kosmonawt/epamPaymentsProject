@@ -1,13 +1,13 @@
-package model;
+package entity;
 
 import java.math.BigDecimal;
 import java.util.Currency;
 
 public class Account {
-
     private final BigDecimal INIT_AMOUNT_CAPACITY = BigDecimal.ZERO;
 
     private long id;
+    private User accountHolder;
     private Card card;
     private BigDecimal amount;
     private Currency currency;
@@ -28,22 +28,20 @@ public class Account {
         this.id = id;
     }
 
+    public User getAccountHolder() {
+        return accountHolder;
+    }
+
+    public void setAccountHolder(User accountHolder) {
+        this.accountHolder = accountHolder;
+    }
+
     public Card getCard() {
         return card;
     }
 
     public void setCard(Card card) {
         this.card = card;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) >= 0) {
-            this.amount = amount;
-        }
     }
 
     public Currency getCurrency() {
@@ -61,6 +59,17 @@ public class Account {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) >= 0) {
+            this.amount = amount;
+        }
+    }
+
 
     @Override
     public String toString() {

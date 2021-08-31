@@ -1,4 +1,4 @@
-package model;
+package entity;
 
 import javax.security.enterprise.credential.Password;
 import java.io.Serializable;
@@ -6,16 +6,12 @@ import java.util.Objects;
 
 public class User implements Serializable {
     private long id;
-    private String firstName;
-    private String lastName;
-    private String email;
+    private String login;
     private Password password;
     private Role role;
 
-    public User(String firstName, String lastName, String email, Password password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    public User(String email, Password password) {
+        this.login = email;
         this.password = password;
         this.role = Role.USER;
     }
@@ -28,28 +24,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getLogin() {
+        return login;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public Password getPassword() {
@@ -68,6 +48,7 @@ public class User implements Serializable {
         this.role = role;
     }
 
+
     public boolean isAdmin() {
         return this.role.equals(Role.ADMIN);
     }
@@ -77,22 +58,19 @@ public class User implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return getEmail().equals(user.getEmail());
+        return getLogin().equals(user.getLogin());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEmail());
+        return Objects.hash(getLogin());
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");
         sb.append("id= ").append(id);
-        sb.append(", firstName= '").append(firstName).append('\'');
-        sb.append(", lastName= '").append(lastName).append('\'');
-        sb.append(", email= '").append(email).append('\'');
-        sb.append(", password= '").append(password).append('\'');
+        sb.append(", login= '").append(login).append('\'');
         sb.append(", role= ").append(role);
         sb.append('}');
         return sb.toString();

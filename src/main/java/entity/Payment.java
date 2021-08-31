@@ -1,23 +1,19 @@
-package model;
+package entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Payment {
 
     private long id;
     private Account paymentFromAccount;
     private Account paymentToAccount;
-    private LocalDate date;
+    private LocalDateTime dateTime;
     private BigDecimal amount;
+    private PaymentStatus paymentStatus;
 
-    public Payment(Account paymentFromAccount, Account paymentToAccount, LocalDate date, BigDecimal amount) {
-        this.paymentFromAccount = paymentFromAccount;
-        this.paymentToAccount = paymentToAccount;
-        this.date = date;
-        this.amount = amount;
+    public Payment() {
     }
-
 
     public long getId() {
         return id;
@@ -43,12 +39,12 @@ public class Payment {
         this.paymentToAccount = paymentToAccount;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public BigDecimal getAmount() {
@@ -59,13 +55,21 @@ public class Payment {
         this.amount = amount;
     }
 
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Payment{");
         sb.append("id= ").append(id);
         sb.append(", paymentFromAccount= ").append(paymentFromAccount.getId());
         sb.append(", paymentToAccount= ").append(paymentToAccount.getId());
-        sb.append(", date= ").append(date.toString());
+        sb.append(", date= ").append(dateTime.toString());
         sb.append(", amount= ").append(amount.toString());
         sb.append('}');
         return sb.toString();

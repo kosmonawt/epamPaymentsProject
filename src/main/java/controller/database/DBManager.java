@@ -24,14 +24,15 @@ public class DBManager {
         try {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
-            ds = (DataSource) envContext.lookup("jdbc/PaymentsDB");
+            ds = (DataSource) envContext.lookup("jdbc/payment");
+
 
         } catch (NamingException e) {
             throw new IllegalStateException("Cannot init DBManager", e);
         }
     }
 
-    private Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         return ds.getConnection();
     }
 
