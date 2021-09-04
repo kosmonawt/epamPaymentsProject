@@ -3,10 +3,10 @@ package entity;
 import java.math.BigDecimal;
 import java.util.Currency;
 
-public class Account {
+public class Account extends Entity {
+    private static final long serialVersionUID = 4716395168539434663L;
     private final BigDecimal INIT_AMOUNT_CAPACITY = BigDecimal.ZERO;
 
-    private long id;
     private User accountHolder;
     private Card card;
     private BigDecimal amount;
@@ -19,15 +19,6 @@ public class Account {
         this.amount = INIT_AMOUNT_CAPACITY;
         this.status = Status.PENDING;
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public User getAccountHolder() {
         return accountHolder;
     }
@@ -74,7 +65,7 @@ public class Account {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Account{");
-        sb.append("id=").append(id);
+        sb.append("id=").append(getId());
         sb.append(", card=").append(card.toString());
         sb.append(", amount=").append(amount.toString());
         sb.append(", currency=").append(currency.toString());

@@ -1,4 +1,4 @@
-create table user_role
+create table if not exists user_role
 (
     id   serial primary key not null,
     role varchar(50)        not null,
@@ -6,51 +6,63 @@ create table user_role
 );
 
 
-create table user_entity
+create table if not exists user_entity
 (
     id       serial      not null,
-    login    varchar     not null,
+    name    varchar     not null,
+    surname    varchar     not null,
+    email    varchar     not null,
     password varchar     not null,
     role     varchar(50) not null,
     primary key (id),
     constraint fk_role foreign key (role) references user_role (role),
-    unique (login)
+    unique (email)
 );
 
-create table card_type
+create table if not exists card_type
 (
     id   serial       not null,
     type varchar(100) not null,
     unique (type)
 );
 
-create table card
+create table if not exists card
 (
-    id             serial primary key not null,
-    card_number    bigint             not null,
-    pin_num        int                not null,
-    cvv_num        int                not null,
-    expiry_date    date               not null,
-    card_type      varchar(100)       not null,
+    id          serial primary key not null,
+    card_number bigint             not null,
+    pin_num     int                not null,
+    cvv_num     int                not null,
+    expiry_date date               not null,
+    card_type   varchar(100)       not null,
     constraint fk_card_type foreign key (card_type) references card_type (type),
     unique (card_number)
 );
 
-create table currency
+create table if not exists currency
 (
     id   serial primary key not null,
     name varchar            not null,
     unique (name)
 );
 
-create table status
+create table if not exists language
+(
+    id         serial primary key not null,
+    short_name varchar(10)        not null,
+    full_name  varchar            not null,
+    unique (short_name)
+);
+
+create table if not exists status
 (
     id   serial primary key not null,
     name varchar            not null,
-    unique (name)
+    language_id int not null,
+    unique (name),
+    constraint fk_language foreign key (language_id) references language(id)
 );
 
-create table account
+create table if not exists account
 (
     id             serial primary key not null,
     card_holder_id int                not null,
@@ -65,14 +77,14 @@ create table account
     unique (id)
 );
 
-create table payment_status
+create table if not exists payment_status
 (
     id     serial primary key not null,
     status varchar            not null,
     unique (status)
 );
 
-create table payment
+create table if not exists payment
 (
     id                      serial primary key not null,
     payment_from_account_id int                not null,
@@ -85,5 +97,5 @@ create table payment
     constraint fk_payment_status foreign key (payment_status) references payment_status (status)
 );
 
-
+-- select * from user_entity where login = 'kjabkjsbavd';
 

@@ -5,5 +5,10 @@
          version="4.0">
 
 
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+        <param-value>locale</param-value>
+    </context-param>
+
 
 </web-app>

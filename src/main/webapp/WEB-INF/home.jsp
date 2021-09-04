@@ -10,7 +10,7 @@
     <jsp:include page="fragments/navbar.jsp"/>
 
     <div class="align-content-md-center">
-        <h2>C:\tomcat-9\bin\catalina.bat run</h2>
+        <h5>${pageScope.values()}</h5>
     </div>
 </div>
 

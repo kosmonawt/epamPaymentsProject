@@ -5,14 +5,14 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="${pageContext.request.contextPath}/">Home page</a>
 
-        <c:choose>
+<%--        <c:choose>
             <c:when test="${sessionScope}">
                 <a class="navbar-brand" href="${pageContext.request.contextPath}/login">Login</a>
             </c:when>
             <c:when test="${sessionScope.session == null}">
                 <a class="navbar-brand" href="${pageContext.request.contextPath}/logout">Logout</a>
             </c:when>
-        </c:choose>
+        </c:choose>--%>
 
     </div>
 </nav>

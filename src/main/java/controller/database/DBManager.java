@@ -50,5 +50,15 @@ public class DBManager {
         return ds.getConnection();
     }
 
+    public void close(AutoCloseable closeable) {
+        try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (Exception e) {
+            LOGGER.warning(e.getMessage());
+            throw new DBException("Can't close "+ closeable.getClass().getSimpleName(), e);
+        }
+    }
 
 }

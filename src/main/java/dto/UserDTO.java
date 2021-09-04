@@ -1,25 +1,39 @@
-package entity;
+package dto;
 
 import javax.security.enterprise.credential.Password;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-public class User extends Entity {
+public class UserDTO {
 
-    private static final long serialVersionUID = -6889036256149495388L;
-
+    private Long id;
     private String name;
     private String surname;
+
+
+    @NotNull(message = "Login cannot be empty")
+    @NotEmpty(message = "Login cannot be empty")
+    @NotBlank(message = "Login cannot be blank")
     private String email;
+
+
+    @NotNull(message = "Login cannot be empty")
+    @NotEmpty(message = "Login cannot be empty")
+    @NotBlank(message = "Login cannot be blank")
     private Password password;
-    private Role role;
+    private String role;
 
-    public User() {
-        this.role = Role.USER;
+    public UserDTO() {
     }
 
-    public boolean isAdmin() {
-        return this.role.equals(Role.ADMIN);
+    public Long getId() {
+        return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -53,22 +67,11 @@ public class User extends Entity {
         this.password = password;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", surname='").append(surname).append('\'');
-        sb.append(", login='").append(email).append('\'');
-        sb.append(", role=").append(role);
-        sb.append('}');
-        return sb.toString();
     }
 }

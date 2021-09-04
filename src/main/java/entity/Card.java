@@ -3,14 +3,15 @@ package entity;
 import java.math.BigInteger;
 import java.time.LocalDate;
 
-public class Card {
-    private long id;
+public class Card extends Entity {
+
+    private static final long serialVersionUID = 2386302708905518585L;
+
     private BigInteger cardNumber;
     private Integer pin;
     private Integer cvv;
     private LocalDate expiryDate;
     private CardType cardType;
-    private String note;
 
     private Card(CardBuilder cardBuilder) {
         this.cardNumber = cardBuilder.cardNumber;
@@ -18,7 +19,6 @@ public class Card {
         this.cvv = cardBuilder.cvv;
         this.expiryDate = cardBuilder.expiryDate;
         this.cardType = cardBuilder.cardType;
-        this.note = cardBuilder.note;
     }
 
     public static class CardBuilder {
@@ -27,7 +27,6 @@ public class Card {
         private Integer cvv;
         private LocalDate expiryDate;
         private CardType cardType;
-        private String note;
 
         public CardBuilder() {
         }
@@ -57,23 +56,9 @@ public class Card {
             return this;
         }
 
-        public CardBuilder addNote(String note) {
-            this.note = note;
-            return this;
-        }
-
         public Card build() {
             return new Card(this);
         }
-    }
-
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public BigInteger getCardNumber() {
@@ -96,9 +81,6 @@ public class Card {
         return cardType;
     }
 
-    public String getNote() {
-        return note;
-    }
 
     @Override
     public String toString() {
