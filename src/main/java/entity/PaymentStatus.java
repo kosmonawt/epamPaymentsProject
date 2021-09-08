@@ -1,6 +1,6 @@
 package entity;
 
-enum PaymentStatus  {
+public enum PaymentStatus {
 
     PREPARED,
     SENT,

@@ -1,7 +1,5 @@
 package entity;
 
-import javax.security.enterprise.credential.Password;
-
 public class User extends Entity {
 
     private static final long serialVersionUID = -6889036256149495388L;
@@ -9,7 +7,7 @@ public class User extends Entity {
     private String name;
     private String surname;
     private String email;
-    private Password password;
+    private String password;
     private Role role;
 
     public User() {
@@ -45,11 +43,11 @@ public class User extends Entity {
         this.email = email;
     }
 
-    public Password getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(Password password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 

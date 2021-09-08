@@ -18,8 +18,11 @@ public class UserDaoConverter implements DaoConverter<UserDTO, User> {
             user.setPassword(userDTO.getPassword());
             if (userDTO.getRole() != null) {
                 user.setRole(Role.valueOf(userDTO.getRole().toUpperCase()));
-            } else if (!user.getId().equals(userDTO.getId()) && userDTO.getId() != null) {
-                user.setId(userDTO.getId());
+            }
+            if (userDTO.getId() != null && user.getId() != null) {
+                if (!userDTO.getId().equals(user.getId())){
+                    user.setId(userDTO.getId());
+                }
             }
         }
         return user;

@@ -13,74 +13,49 @@ public class Card extends Entity {
     private LocalDate expiryDate;
     private CardType cardType;
 
-    private Card(CardBuilder cardBuilder) {
-        this.cardNumber = cardBuilder.cardNumber;
-        this.pin = cardBuilder.pin;
-        this.cvv = cardBuilder.cvv;
-        this.expiryDate = cardBuilder.expiryDate;
-        this.cardType = cardBuilder.cardType;
-    }
+    public Card() {
 
-    public static class CardBuilder {
-        private BigInteger cardNumber;
-        private Integer pin;
-        private Integer cvv;
-        private LocalDate expiryDate;
-        private CardType cardType;
-
-        public CardBuilder() {
-        }
-
-        public CardBuilder addCardNumber(BigInteger cardNumber) {
-            this.cardNumber = cardNumber;
-            return this;
-        }
-
-        public CardBuilder addPin(Integer pin) {
-            this.pin = pin;
-            return this;
-        }
-
-        public CardBuilder addCVV(Integer cvv) {
-            this.cvv = cvv;
-            return this;
-        }
-
-        public CardBuilder addExpiryDate(LocalDate expiryDate) {
-            this.expiryDate = expiryDate;
-            return this;
-        }
-
-        public CardBuilder addCardType(CardType cardType) {
-            this.cardType = cardType;
-            return this;
-        }
-
-        public Card build() {
-            return new Card(this);
-        }
     }
 
     public BigInteger getCardNumber() {
         return cardNumber;
     }
 
+    public void setCardNumber(BigInteger cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
     public Integer getPin() {
         return pin;
+    }
+
+    public void setPin(Integer pin) {
+        this.pin = pin;
     }
 
     public Integer getCvv() {
         return cvv;
     }
 
+    public void setCvv(Integer cvv) {
+        this.cvv = cvv;
+    }
+
     public LocalDate getExpiryDate() {
         return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
     }
 
     public CardType getCardType() {
         return cardType;
     }
 
+    public void setCardType(CardType cardType) {
+        this.cardType = cardType;
+    }
 
     @Override
     public String toString() {

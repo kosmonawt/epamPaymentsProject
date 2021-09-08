@@ -1,6 +1,6 @@
 package service;
 
-import dao.UserDAO;
+import dao.DAO;
 import dao.impl.UserDaoImpl;
 import dto.UserDTO;
 
@@ -8,7 +8,7 @@ import dto.UserDTO;
 public class UserService {
 
     public static UserService userService;
-    private UserDAO userDAO = new UserDaoImpl();
+    private DAO<UserDTO> userDAO = new UserDaoImpl();
 
 
     public static synchronized UserService getInstance() {
@@ -21,11 +21,11 @@ public class UserService {
     }
 
     public boolean existsByLogin(String login) {
-        return userDAO.existByLogin(login);
+        return userDAO.exist(login);
     }
 
 
     public void save(UserDTO userDTO) {
-        userDAO.save(userDTO);
+        userDAO.create(userDTO);
     }
 }

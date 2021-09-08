@@ -13,12 +13,16 @@ public class Account extends Entity {
     private Currency currency;
     private Status status;
 
+    public Account() {
+    }
+
     public Account(Card card, Currency currency) {
         this.card = card;
         this.currency = currency;
         this.amount = INIT_AMOUNT_CAPACITY;
         this.status = Status.PENDING;
     }
+
     public User getAccountHolder() {
         return accountHolder;
     }

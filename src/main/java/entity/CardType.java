@@ -1,6 +1,6 @@
 package entity;
 
-enum CardType {
+public enum CardType {
     VISA,
     MASTERCARD,
 }

@@ -12,7 +12,6 @@ public class Payment extends Entity {
     private LocalDateTime dateTime;
     private BigDecimal amount;
     private PaymentStatus paymentStatus;
-    private String description;
 
     public Payment() {
     }
@@ -47,14 +46,6 @@ public class Payment extends Entity {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public PaymentStatus getPaymentStatus() {

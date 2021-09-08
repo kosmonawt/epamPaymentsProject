@@ -42,7 +42,7 @@ public class RegistrationController extends HttpServlet {
         userDTO.setName(req.getParameter("name"));
         userDTO.setSurname(req.getParameter("surname"));
         userDTO.setEmail(req.getParameter("email"));
-        userDTO.setName(req.getParameter("password"));
+        userDTO.setPassword(req.getParameter("password"));
 
         userService.save(userDTO);
 

@@ -1,6 +1,5 @@
 package dto;
 
-import javax.security.enterprise.credential.Password;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -21,7 +20,7 @@ public class UserDTO {
     @NotNull(message = "Login cannot be empty")
     @NotEmpty(message = "Login cannot be empty")
     @NotBlank(message = "Login cannot be blank")
-    private Password password;
+    private String password;
     private String role;
 
     public UserDTO() {
@@ -59,11 +58,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public Password getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(Password password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
