@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="locale"/>
 <html>
 <head>
     <jsp:include page="fragments/header.jsp"/>
@@ -10,9 +12,28 @@
 <div class="container">
     <jsp:include page="fragments/navbar.jsp"/>
 
-    <div class="align-content-md-center">
-        <h2>login page</h2>
+    <div class="login-form">
+        <form action="<%=request.getContextPath()%>/login" method="post">
+            <div class="form-content">
+
+                <div class="form-group">
+                    <label for="email"><fmt:message key="settings.jsp.label.localization.email"/></label>
+                    <input type="email" class="form-control" id="email" name="email"
+                           placeholder="<fmt:message key="settings.jsp.label.localization.email.enter"/>">
+                </div>
+                <div class="form-group">
+                    <label for="password"><fmt:message key="settings.jsp.label.localization.password"/></label>
+                    <input type="password" class="form-control" id="password" name="password"
+                           placeholder="<fmt:message key="settings.jsp.label.localization.password.enter"/>">
+                </div>
+                <br>
+
+                <button type="submit" class="btn btn-primary"><fmt:message
+                        key="settings.jsp.label.localization.button.login"/></button>
+            </div>
+        </form>
     </div>
+
 </div>
 </body>
 

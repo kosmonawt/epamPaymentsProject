@@ -20,26 +20,25 @@ public enum SupportedLocale {
         this.locale = locale;
     }
 
-
     private Locale locale;
 
     public Locale getLocale() {
         return locale;
     }
 
-    public static Locale getDefault(){
+    public static Locale getDefault() {
         return DEFAULT_LOCALE;
     }
 
-    public static Locale getDefaultOrLocale(String lang){
+    public static Locale getDefaultOrLocale(String lang) {
         return Arrays.stream(SupportedLocale.values())
                 .map(SupportedLocale::getLocale)
-                .filter(x -> x.getLanguage().equals(lang))
+                .filter(x -> x.getLanguage().equalsIgnoreCase(lang))
                 .findFirst()
                 .orElse(getDefault());
     }
 
-    public static List<String> getSupportedLanguages(){
+    public static List<String> getSupportedLanguages() {
         return Arrays.stream(SupportedLocale.values())
                 .map(x -> x.getLocale().getLanguage())
                 .collect(Collectors.toList());

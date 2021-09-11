@@ -54,8 +54,16 @@ public class UserDaoImpl implements DAO<UserDTO> {
     }
 
     @Override
-    public UserDTO getByName(String name) {
-        return null;
+    public UserDTO getByName(String email) {
+        UserDaoConverter converter = new UserDaoConverter();
+        User user = new User();
+        try {
+            user = dbManager.getUserByLogin(email);
+        } catch (DBException e) {
+            LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+        }
+        return converter.convertFrom(user);
     }
 
     @Override
@@ -94,10 +102,17 @@ public class UserDaoImpl implements DAO<UserDTO> {
 
     @Override
     public boolean exist(String name) {
-        try (Connection connection = dbManager.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(Query.USER_EXIST_BY_LOGIN);
-            preparedStatement.setString(1, "'" + name + "'");
-            ResultSet resultSet = preparedStatement.executeQuery();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String emailFromDB;
+        try {
+            preparedStatement = connection.prepareStatement(Query.USER_EXIST_BY_LOGIN);
+            preparedStatement.setString(1, name);
+            if (preparedStatement.executeUpdate() > 0) {
+                resultSet = preparedStatement.getResultSet();
+                emailFromDB = resultSet.getString(4);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

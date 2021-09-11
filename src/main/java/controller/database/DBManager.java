@@ -87,6 +87,35 @@ public class DBManager {
         }
     }
 
+    public User getUserByLogin(String email) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        User user = null;
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.USER_EXIST_BY_LOGIN);
+            int k = 1;
+            preparedStatement.setString(k, email);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                if (resultSet.next()) {
+                    user = getUserFromResultSet(resultSet);
+                }
+            }
+            con.commit();
+        } catch (SQLException e) {
+            LOGGER.warning(e.getMessage());
+            rollback(con);
+            throw new DBException("User with email '" + email + "' Does not exist in database", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+        return user;
+    }
+
     public User getUser(@NotNull Long id) {
         Connection con = null;
         PreparedStatement preparedStatement = null;

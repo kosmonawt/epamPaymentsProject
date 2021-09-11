@@ -58,7 +58,7 @@ public class RegistrationController extends HttpServlet {
         if (login == null || login.isBlank()) {
             return "Invalid user login !";
         }
-        if (userService.existsByLogin(login)) {
+        if (userService.existsByEmail(login)) {
             return "Login is already in use";
         }
 

@@ -20,12 +20,21 @@ public class UserService {
 
     }
 
-    public boolean existsByLogin(String login) {
-        return userDAO.exist(login);
+    public boolean existsByEmail(String email) {
+        return userDAO.exist(email);
     }
 
 
     public void save(UserDTO userDTO) {
         userDAO.create(userDTO);
+    }
+
+    public UserDTO getUserByEmail(String email) {
+        return userDAO.getByName(email);
+    }
+
+    public boolean find(String email, String password) {
+        UserDTO userDTO = getUserByEmail(email);
+        return userDTO.getPassword().equals(password);
     }
 }

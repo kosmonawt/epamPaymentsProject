@@ -20,7 +20,7 @@ public class UserDaoConverter implements DaoConverter<UserDTO, User> {
                 user.setRole(Role.valueOf(userDTO.getRole().toUpperCase()));
             }
             if (userDTO.getId() != null && user.getId() != null) {
-                if (!userDTO.getId().equals(user.getId())){
+                if (!userDTO.getId().equals(user.getId())) {
                     user.setId(userDTO.getId());
                 }
             }
@@ -37,6 +37,7 @@ public class UserDaoConverter implements DaoConverter<UserDTO, User> {
             userDTO.setName(user.getName());
             userDTO.setSurname(user.getSurname());
             userDTO.setEmail(user.getEmail());
+            userDTO.setPassword(user.getPassword());
             userDTO.setRole(user.getRole().name());
         }
         return userDTO;
