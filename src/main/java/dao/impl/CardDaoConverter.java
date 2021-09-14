@@ -7,6 +7,9 @@ import entity.CardType;
 
 import java.time.LocalDate;
 
+/**
+ * Convert Card entity to DTO and back
+ */
 
 public class CardDaoConverter implements DaoConverter<CardDTO, Card> {
     @Override

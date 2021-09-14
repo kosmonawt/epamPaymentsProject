@@ -14,10 +14,6 @@ import java.util.Map;
 @WebServlet(urlPatterns = "/")
 public class HomePageController extends HttpServlet {
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

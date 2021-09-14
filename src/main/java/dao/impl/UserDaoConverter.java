@@ -5,6 +5,11 @@ import dto.UserDTO;
 import entity.Role;
 import entity.User;
 
+/**
+ * Convert User entity to DTO and back
+ */
+
+
 public class UserDaoConverter implements DaoConverter<UserDTO, User> {
 
     @Override

@@ -3,6 +3,7 @@ package controller.database;
 import entity.*;
 import exception.DBException;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.log4j.Logger;
 import sql.Query;
 
 import javax.validation.constraints.NotNull;
@@ -12,10 +13,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
+
+/**
+ * Database Manager, include CRUD low level method for communication with database
+ * Only the required DAO methods are defined!
+ * <p>
+ * SINGLETON
+ */
 public class DBManager {
-    private static final Logger LOGGER = Logger.getLogger(DBManager.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(DBManager.class);
     private static final String RESOURCE_BUNDLE = "app";
     private static final String DB_CONNECTION_URL = "db.connection.url";
     private static final String DB_USER = "db.user";
@@ -51,10 +58,19 @@ public class DBManager {
             ds.setDriverClassName(driver);
 
         } catch (NumberFormatException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             throw new DBException("Can't connect to database", e);
         }
     }
+
+
+    /**
+     * Returns a DB connection from the Pool Connections. Before using this
+     * method you must configure the Date Source and the Connections Pool in your
+     * app.properties
+     *
+     * @return A DB connection.
+     */
 
     public Connection getConnection() throws SQLException {
         return ds.getConnection();
@@ -68,7 +84,7 @@ public class DBManager {
         try {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.USER_GET_ALL);
-            if (preparedStatement.executeUpdate() > 0) {
+            if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getResultSet();
                 while (resultSet.next()) {
                     users.add(getUserFromResultSet(resultSet));
@@ -77,7 +93,7 @@ public class DBManager {
             con.commit();
             return users;
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can't get Users from database", e);
         } finally {
@@ -91,7 +107,7 @@ public class DBManager {
         Connection con = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        User user = null;
+        User user = new User();
         try {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.USER_EXIST_BY_LOGIN);
@@ -105,7 +121,7 @@ public class DBManager {
             }
             con.commit();
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("User with email '" + email + "' Does not exist in database", e);
         } finally {
@@ -126,7 +142,7 @@ public class DBManager {
             preparedStatement = con.prepareStatement(Query.USER_GET_BY_ID);
             int k = 1;
             preparedStatement.setString(k, String.valueOf(id));
-            if (preparedStatement.executeUpdate() > 0) {
+            if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getResultSet();
                 if (resultSet.next()) {
                     user = getUserFromResultSet(resultSet);
@@ -135,7 +151,7 @@ public class DBManager {
             con.commit();
             return user;
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("User with ID= " + id + " Does not exist in database", e);
         } finally {
@@ -158,7 +174,7 @@ public class DBManager {
             preparedStatement.setString(k++, user.getEmail());
             preparedStatement.setString(k++, user.getPassword());
             preparedStatement.setString(k++, user.getRole().name());
-            if (preparedStatement.executeUpdate() > 0) {
+            if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next()) {
                     user.setId(resultSet.getLong(1));
@@ -166,7 +182,7 @@ public class DBManager {
             }
             con.commit();
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can't insert user to database", e);
         } finally {
@@ -188,11 +204,11 @@ public class DBManager {
             preparedStatement.setString(k++, user.getEmail());
             preparedStatement.setString(k++, user.getPassword());
             preparedStatement.setString(k++, user.getRole().name());
-            preparedStatement.setString(k++, String.valueOf(user.getId()));
+            preparedStatement.setInt(k++, Math.toIntExact(user.getId()));
             preparedStatement.executeUpdate();
             con.commit();
-        } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+        } catch (SQLException | ArithmeticException e) {
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can't update user in database", e);
         } finally {
@@ -213,7 +229,7 @@ public class DBManager {
             preparedStatement.executeUpdate();
             con.commit();
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("User with ID= " + id + " Does not exist in database", e);
         } finally {
@@ -238,7 +254,7 @@ public class DBManager {
             }
             connection.commit();
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(connection);
             throw new DBException("Role with name: " + name + " does not exist in database", e);
 
@@ -266,7 +282,7 @@ public class DBManager {
             }
             connection.commit();
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(connection);
             throw new DBException("Role with id: " + id + " does not exist in database", e);
 
@@ -287,13 +303,13 @@ public class DBManager {
         try {
             connection = getConnection();
             preparedStatement = connection.prepareStatement(Query.CARD_GET_BY_ID);
-            if (preparedStatement.executeUpdate() > 0) {
+            if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getResultSet();
                 return getCardFromResultSet(resultSet);
             }
             connection.commit();
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(connection);
             throw new DBException("Role with id: " + id + " does not exist in database", e);
 
@@ -313,13 +329,14 @@ public class DBManager {
         try {
             connection = getConnection();
             preparedStatement = connection.prepareStatement(Query.CARD_GET_BY_CARD_NUMBER);
-            if (preparedStatement.executeUpdate() > 0) {
+            preparedStatement.setInt(1, Integer.parseInt(cardNumber));
+            if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getResultSet();
                 return getCardFromResultSet(resultSet);
             }
             connection.commit();
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(connection);
             throw new DBException("Role with card number: " + cardNumber + " does not exist in database", e);
 
@@ -329,6 +346,36 @@ public class DBManager {
             close(connection);
         }
         return card;
+    }
+
+    public List<Account> getAllUserAccountsById(Long id) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Account> accounts = new ArrayList<>();
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.ACCOUNT_GET_ALL_BY_USER_ID);
+            preparedStatement.setInt(1, id.intValue());
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                while (resultSet.next()) {
+                    accounts.add(getAccountFromResultSet(resultSet));
+                    //TODO chek impl of get list of object from result set (stream ?)
+                }
+            }
+            con.commit();
+            return accounts;
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can not create card", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
     }
 
     public void createCard(Card card) {
@@ -352,7 +399,7 @@ public class DBManager {
             }
             con.commit();
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can not create card", e);
         } finally {
@@ -378,7 +425,7 @@ public class DBManager {
             }
             return cardList;
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can't get all cards", e);
         } finally {
@@ -405,7 +452,7 @@ public class DBManager {
             con.commit();
 
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can't update card with card number: " + card.getCardNumber() + " and id: " + card.getId(), e);
         } finally {
@@ -426,7 +473,7 @@ public class DBManager {
             con.commit();
 
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can't delete card with id: " + id, e);
         } finally {
@@ -456,7 +503,7 @@ public class DBManager {
             }
 
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can't create payment : " + payment.toString(), e);
         } finally {
@@ -478,26 +525,57 @@ public class DBManager {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.PAYMENT_GET_BY_ACCOUNT_FROM_ID);
             preparedStatement.setInt(1, id.intValue());
-            if (preparedStatement.executeUpdate() > 0) {
+            if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getResultSet();
                 payment = getPaymentFromResultSet(resultSet);
             }
-
+            return payment;
         } catch (SQLException e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can't get payment by account id : " + id, e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
         }
 
-        return null;
     }
 
     private Payment getPaymentFromResultSet(ResultSet resultSet) throws SQLException {
-//TODO when Account DAO would be implemented
+        //TODO when Account DAO would be implemented
 
         return null;
     }
 
+
+    /**
+     * return Account entity from database if user exist or empty user if it doesn't
+     *
+     * @param resultSet result set from prepared statement
+     * @return return Account entity from database
+     * @throws SQLException
+     */
+
+    private Account getAccountFromResultSet(ResultSet resultSet) throws SQLException {
+        int k = 1;
+        Account account = new Account();
+        account.setId(resultSet.getLong(k++));
+        account.setAccountHolder(getUser(resultSet.getLong(k++)));
+        account.setCard(getCardById(resultSet.getLong(k++)));
+        account.setAmount(resultSet.getBigDecimal(k++));
+        account.setCurrency(resultSet.getString(k++));
+        account.setStatus(Status.valueOf(resultSet.getString(k++).toUpperCase()));
+        return account;
+    }
+
+    /**
+     * return Card entity from database if user exist or empty user if it doesn't
+     *
+     * @param resultSet result set from prepared statement
+     * @return return Card entity from database
+     * @throws SQLException
+     */
     private Card getCardFromResultSet(ResultSet resultSet) throws SQLException {
         Card card = new Card();
         card.setId(resultSet.getLong(1));
@@ -508,6 +586,14 @@ public class DBManager {
         card.setCardType(CardType.valueOf(resultSet.getString(6).trim().toUpperCase()));
         return card;
     }
+
+    /**
+     * return User entity from database if user exist or empty user if it doesn't
+     *
+     * @param resultSet - result set from prepared statement
+     * @return new User from result set
+     * @throws SQLException
+     */
 
     private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
         int k = 1;
@@ -521,23 +607,35 @@ public class DBManager {
         return user;
     }
 
+    /**
+     * Close given instance of AutoCloseable class
+     *
+     * @param closeable must be an instance of AutoCloseable
+     */
+
     private static void close(AutoCloseable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();
             } catch (Exception e) {
-                LOGGER.warning(e.getMessage());
+                LOGGER.warn(e.getMessage());
                 throw new DBException("Can't close " + closeable.getClass().getSimpleName(), e);
             }
         }
     }
+
+    /**
+     * Rollback given connection
+     *
+     * @param connection to rollback
+     */
 
     private static void rollback(Connection connection) {
         if (connection != null) {
             try {
                 connection.rollback();
             } catch (SQLException e) {
-                LOGGER.warning(e.getMessage());
+                LOGGER.warn(e.getMessage());
                 throw new DBException("Can't rollback connection ", e);
             }
         }

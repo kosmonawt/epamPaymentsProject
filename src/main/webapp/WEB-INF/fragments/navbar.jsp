@@ -13,6 +13,12 @@
         <a class="navbar-brand" href="${pageContext.request.contextPath}/"><fmt:message
                 key="settings.jsp.label.localization.homepage"/></a>
         <div class="nav-item">
+            <c:if test="${sessionScope.user != null}">
+                <a class="navbar-brand" href="${pageContext.request.contextPath}/app/user">
+                <fmt:message key="settings.jsp.label.localization.userPage"/></a>
+            </c:if>
+        </div>
+        <div class="nav-item">
             <c:if test="${sessionScope.user == null}">
                 <a class="navbar-brand" href="${pageContext.request.contextPath}/login"><fmt:message
                         key="settings.jsp.label.localization.login"/> </a>

@@ -21,13 +21,5 @@ public class Query {
     public static final String PAYMENT_GET_BY_ACCOUNT_FROM_ID = "select * from payment where payment_from_account_id = ?";
     public static final String PAYMENT_GET_BY_ACCOUNT_TO_ID = "select * from payment where payment_to_account_id = ?";
 
+    public static final String ACCOUNT_GET_ALL_BY_USER_ID = "select * from account where card_holder_id = ?";
 }
-/*
-*     id          serial primary key not null,
-    card_number bigint             not null,
-    pin_num     int                not null,
-    cvv_num     int                not null,
-    expiry_date date               not null,
-    card_type   varchar(100)       not null,
-*
-* */

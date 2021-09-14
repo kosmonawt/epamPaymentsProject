@@ -1,6 +1,7 @@
 package controller.web;
 
 import dto.UserDTO;
+import org.apache.log4j.Logger;
 import service.UserService;
 
 import javax.servlet.ServletException;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/login")
 public class LoginController extends HttpServlet {
-
+    private final Logger logger = Logger.getLogger(LoginController.class);
     private final UserService userService = UserService.getInstance();
 
     @Override
@@ -39,16 +40,21 @@ public class LoginController extends HttpServlet {
             if (userService.find(email, password)) {
                 UserDTO userDTO = userService.getUserByEmail(email);
                 req.getSession().setAttribute("user", userDTO);
+                logger.debug("Login successful, redirect to home page");
+                resp.sendRedirect("/");
             } else {
-                messages.put("wrongPass", "Wrong password");
+                logger.warn("Incorrect password or login");
+                messages.put("errorLogin", "Wrong password");
                 req.setAttribute("messages", messages);
-                req.getRequestDispatcher("/login").forward(req, resp);
+                logger.debug("start forwarding to login page");
+                req.getRequestDispatcher("WEB-INF/login.jsp").forward(req, resp);
             }
 
         } else {
+            logger.warn("empty password or login");
             req.setAttribute("messages", messages);
-            req.getRequestDispatcher("/login").forward(req, resp);
+            req.getRequestDispatcher("WEB-INF/login.jsp").forward(req, resp);
         }
-        resp.sendRedirect("/");
+
     }
 }

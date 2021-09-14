@@ -7,12 +7,14 @@ import entity.Payment;
 import entity.PaymentStatus;
 
 /**
- * Convert Payment DAO to DTO and back
+ * Convert Payment entity to DTO and back
  */
 
 public class PaymentConverter implements DaoConverter<PaymentDTO, Payment> {
     private Account from = new Account();
     private Account to = new Account();
+
+    //TODO add field with payment number to converter and in DTO <-> DAO
 
     @Override
     public Payment convertTo(PaymentDTO paymentDTO) {

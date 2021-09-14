@@ -9,6 +9,11 @@ import exception.DBException;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Payment DAO
+ * communication with database
+ */
+
 public class PaymentDaoImpl implements DAO<PaymentDTO> {
 
     private static final Logger LOGGER = Logger.getLogger(PaymentDaoImpl.class.getSimpleName());

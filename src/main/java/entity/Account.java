@@ -1,7 +1,6 @@
 package entity;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 
 public class Account extends Entity {
     private static final long serialVersionUID = 4716395168539434663L;
@@ -10,13 +9,13 @@ public class Account extends Entity {
     private User accountHolder;
     private Card card;
     private BigDecimal amount;
-    private Currency currency;
+    private String currency;
     private Status status;
 
     public Account() {
     }
 
-    public Account(Card card, Currency currency) {
+    public Account(Card card, String currency) {
         this.card = card;
         this.currency = currency;
         this.amount = INIT_AMOUNT_CAPACITY;
@@ -39,11 +38,11 @@ public class Account extends Entity {
         this.card = card;
     }
 
-    public Currency getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 

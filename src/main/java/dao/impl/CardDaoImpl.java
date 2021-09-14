@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Card DAO
+ * Card Data Access Object
  * communication with database
  */
 
@@ -65,6 +65,11 @@ public class CardDaoImpl implements DAO<CardDTO> {
         return cardDTO;
     }
 
+    /**
+     * convert card from card DTO and save in database
+     *
+     * @param cardDTO
+     */
     @Override
     public void create(CardDTO cardDTO) {
         CardDaoConverter converter = new CardDaoConverter();
@@ -99,9 +104,10 @@ public class CardDaoImpl implements DAO<CardDTO> {
             e.printStackTrace();
         }
     }
-/**
- *
- */
+
+    /**
+     *
+     */
     @Override
     public boolean exist(String cardNumber) {
         //TODO
