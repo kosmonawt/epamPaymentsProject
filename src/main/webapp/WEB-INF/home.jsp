@@ -1,16 +1,20 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: kosvk
-  Date: 24.08.2021
-  Time: 18:27
-  To change this template use File | Settings | File Templates.
---%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%--<%@taglib uri="http://example.com/functions" prefix="f" %><%@ taglib prefix="f" uri=""%>--%>
 <html>
-  <head>
-    <title>$Title$</title>
-  </head>
-  <body>
-  $END$
-  </body>
+<head>
+    <jsp:include page="fragments/header.jsp"/>
+</head>
+<body>
+<div class="container">
+    <jsp:include page="fragments/navbar.jsp"/>
+
+    <div class="align-content-md-center">
+        <h5>${pageScope.values()}</h5>
+    </div>
+
+</div>
+
+</body>
 </html>

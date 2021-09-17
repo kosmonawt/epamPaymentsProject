@@ -1,0 +1,15 @@
+<Context>
+
+    <Resource name="jdbc/payment"
+              auth="Container"
+              type="javax.sql.DataSource"
+
+              maxTotal="50" maxIdle="10" maxWaitMillis="10000"
+              driverClassName="org.postgresql.Driver"
+              username="postgres" password="kolobok"
+
+              defaultAutoCommit="false"
+              defaultTransactionIsolation="READ_COMMITTED"
+              url="jdbc:postgresql://localhost:5432/payments"/>
+
+</Context>
