@@ -329,17 +329,22 @@ public class DBManager {
         try {
             connection = getConnection();
             preparedStatement = connection.prepareStatement(Query.CARD_GET_BY_CARD_NUMBER);
-            preparedStatement.setInt(1, Integer.parseInt(cardNumber));
+            preparedStatement.setLong(1, Long.parseLong(cardNumber));
             if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getResultSet();
-                return getCardFromResultSet(resultSet);
+                if (resultSet.next()) {
+                    card = getCardFromResultSet(resultSet);
+                }
             }
             connection.commit();
+            return card;
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             rollback(connection);
-            throw new DBException("Role with card number: " + cardNumber + " does not exist in database", e);
+            throw new DBException("Card with card number: " + cardNumber + " does not exist in database", e);
 
+        } catch (NumberFormatException e) {
+            LOGGER.warn("Incorrect number input in \" getCardByCardNumber \" ");
         } finally {
             close(resultSet);
             close(preparedStatement);
@@ -359,7 +364,7 @@ public class DBManager {
             preparedStatement.setInt(1, id.intValue());
             if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getResultSet();
-                while (resultSet.next()) {
+                if (resultSet.next()) {
                     accounts.add(getAccountFromResultSet(resultSet));
                     //TODO chek impl of get list of object from result set (stream ?)
                 }
@@ -378,6 +383,39 @@ public class DBManager {
         }
     }
 
+    public void createAccount(Account account) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.ACCOUNT_CREATE, Statement.RETURN_GENERATED_KEYS);
+            int k = 1;
+            preparedStatement.setLong(k++, account.getAccountNumber().longValue());
+            preparedStatement.setString(k++, account.getUserLogin());
+            preparedStatement.setBigDecimal(k++, account.getAmount());
+            preparedStatement.setString(k++, account.getCurrency().name());
+            preparedStatement.setString(k++, account.getStatus().name());
+
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    account.setId(resultSet.getLong(1));
+                }
+            }
+            con.commit();
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can not create account", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+
+    }
+
     public void createCard(Card card) {
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -386,12 +424,13 @@ public class DBManager {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.CARD_CREATE, Statement.RETURN_GENERATED_KEYS);
             int k = 1;
-            preparedStatement.setInt(k++, card.getCardNumber().intValue());
+            preparedStatement.setLong(k++, card.getCardNumber().longValue());
             preparedStatement.setInt(k++, card.getPin());
             preparedStatement.setInt(k++, card.getCvv());
             preparedStatement.setString(k++, card.getExpiryDate().toString());
             preparedStatement.setString(k++, card.getCardType().name());
-            if (preparedStatement.executeUpdate() > 0) {
+            preparedStatement.setLong(k++, card.getAccountNum().longValue());
+            if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next()) {
                     card.setId(resultSet.getLong(1));
@@ -442,7 +481,7 @@ public class DBManager {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.CARD_UPDATE);
             int k = 1;
-            preparedStatement.setInt(k++, card.getCardNumber().intValue());
+            preparedStatement.setLong(k++, card.getCardNumber().longValue());
             preparedStatement.setInt(k++, card.getPin());
             preparedStatement.setInt(k++, card.getCvv());
             preparedStatement.setString(k++, card.getExpiryDate().toString());
@@ -490,8 +529,8 @@ public class DBManager {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.PAYMENT_CREATE);
             int k = 1;
-            preparedStatement.setInt(k++, payment.getPaymentFromAccount().getId().intValue());
-            preparedStatement.setInt(k++, payment.getPaymentToAccount().getId().intValue());
+            preparedStatement.setLong(k++, payment.getPaymentFromAccount().longValue());
+            preparedStatement.setLong(k++, payment.getPaymentToAccount().longValue());
             preparedStatement.setTimestamp(k++, Timestamp.valueOf(payment.getDateTime()));
             preparedStatement.setBigDecimal(k++, payment.getAmount());
             preparedStatement.setString(k++, payment.toString());
@@ -529,6 +568,7 @@ public class DBManager {
                 resultSet = preparedStatement.getResultSet();
                 payment = getPaymentFromResultSet(resultSet);
             }
+            con.commit();
             return payment;
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
@@ -561,10 +601,10 @@ public class DBManager {
         int k = 1;
         Account account = new Account();
         account.setId(resultSet.getLong(k++));
-        account.setAccountHolder(getUser(resultSet.getLong(k++)));
-        account.setCard(getCardById(resultSet.getLong(k++)));
+        account.setAccountNumber(BigInteger.valueOf(resultSet.getLong(k++)));
+        account.setUserLogin(resultSet.getString(k++));
         account.setAmount(resultSet.getBigDecimal(k++));
-        account.setCurrency(resultSet.getString(k++));
+        account.setCurrency(Currency.valueOf(resultSet.getString(k++)));
         account.setStatus(Status.valueOf(resultSet.getString(k++).toUpperCase()));
         return account;
     }
@@ -584,6 +624,7 @@ public class DBManager {
         card.setCvv(resultSet.getInt(4));
         card.setExpiryDate(LocalDate.parse(resultSet.getString(5)));
         card.setCardType(CardType.valueOf(resultSet.getString(6).trim().toUpperCase()));
+        card.setAccountNum(BigInteger.valueOf(resultSet.getLong(7)));
         return card;
     }
 
@@ -643,5 +684,32 @@ public class DBManager {
 
     public void deletePayment(Long id) {
         //TODO
+    }
+
+    public BigInteger getNumberFromVault() {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        BigInteger result = null;
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.VAULT);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+
+                result = BigInteger.valueOf((resultSet.getLong(1)));
+            }
+
+            con.commit();
+            return result;
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can't get number from vault ", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
     }
 }

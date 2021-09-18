@@ -4,10 +4,11 @@ import controller.database.DBManager;
 import dao.DAO;
 import dto.AccountDTO;
 import entity.Account;
+import exception.DBException;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 
 /**
@@ -38,6 +39,15 @@ public class AccountDaoImpl implements DAO<AccountDTO> {
     @Override
     public void create(AccountDTO accountDTO) {
 
+        AccountConverter converter = new AccountConverter();
+        try {
+            dbManager.createAccount(converter.convertTo(accountDTO));
+        } catch (DBException e) {
+            LOGGER.debug("Create account exception");
+            LOGGER.warn(e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -64,4 +74,9 @@ public class AccountDaoImpl implements DAO<AccountDTO> {
         }
         return accountDTOS;
     }
+
+    public void createAccountWithCardId(Long cardId) {
+
+    }
+
 }

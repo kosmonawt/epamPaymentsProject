@@ -3,6 +3,7 @@ package service;
 import dao.DAO;
 import dao.impl.UserDaoImpl;
 import dto.UserDTO;
+import entity.User;
 
 
 public class UserService {
@@ -45,5 +46,9 @@ public class UserService {
         } catch (NullPointerException e) {
             return false;
         }
+    }
+
+    public UserDTO getUserById(Long userId) {
+        return userDAO.getById(userId);
     }
 }

@@ -29,7 +29,7 @@ public class CardService {
         cardDao.create(cardDTO);
     }
 
-    private CardDTO getCardByCardNumber(BigInteger cardNumber) {
+    public CardDTO getCardByCardNumber(BigInteger cardNumber) {
         return cardDao.getByName(cardNumber.toString());
     }
 
@@ -56,13 +56,11 @@ public class CardService {
     }
 
     private Integer generateCvv() {
-        Random random = new Random();
-        return random.nextInt(999);
+        return ThreadLocalRandom.current().nextInt(100,999);
     }
 
     private Integer generatePin() {
-        Random random = new Random();
-        return random.nextInt(9999);
+        return ThreadLocalRandom.current().nextInt(1000,9999);
     }
 
     private BigInteger generateRandomCardNumber() {
@@ -75,5 +73,10 @@ public class CardService {
     public Long getCardIdByCardNumber(BigInteger cardNumber) {
         CardDTO cardDTO = getCardByCardNumber(cardNumber);
         return cardDTO.getId();
+    }
+
+    public CardDTO getCardByCardId(Long cardId) {
+
+        return cardDao.getById(cardId);
     }
 }

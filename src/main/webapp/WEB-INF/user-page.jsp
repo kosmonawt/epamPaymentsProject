@@ -26,6 +26,11 @@
 
     </div>
 
+    <div class="container">
+        <a href="<%=request.getContextPath()%>/app/user/accounts"><fmt:message
+                key="settings.jsp.label.localization.accounts"/> </a>
+    </div>
+
 </div>
 
 </body>

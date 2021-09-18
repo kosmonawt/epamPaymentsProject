@@ -11,6 +11,17 @@ public class CardDTO {
     private Integer cvv;
     private String expiryDate;
     private String cardType;
+    private Long accountNum;
+
+    public CardDTO(){}
+
+    public Long getAccountNum() {
+        return accountNum;
+    }
+
+    public void setAccountNum(Long accountNum) {
+        this.accountNum = accountNum;
+    }
 
     public Long getId() {
         return id;

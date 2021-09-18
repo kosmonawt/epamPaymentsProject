@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(urlPatterns = "/")
+@WebServlet(urlPatterns = "/home")
 public class HomePageController extends HttpServlet {
 
 

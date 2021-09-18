@@ -41,7 +41,7 @@ public class LoginController extends HttpServlet {
                 UserDTO userDTO = userService.getUserByEmail(email);
                 req.getSession().setAttribute("user", userDTO);
                 logger.debug("Login successful, redirect to home page");
-                resp.sendRedirect("/");
+                resp.sendRedirect("/home");
             } else {
                 logger.warn("Incorrect password or login");
                 messages.put("errorLogin", "Wrong password");

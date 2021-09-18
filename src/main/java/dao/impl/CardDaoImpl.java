@@ -56,7 +56,10 @@ public class CardDaoImpl implements DAO<CardDTO> {
         try {
             CardDaoConverter converter = new CardDaoConverter();
             Card card = dbManager.getCardByCardNumber(cardNumber);
-            return converter.convertFrom(card);
+            if (card != null) {
+                return converter.convertFrom(card);
+            }
+
         } catch (DBException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();

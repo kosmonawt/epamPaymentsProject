@@ -47,10 +47,8 @@ public class RegistrationController extends HttpServlet {
         userDTO.setPassword(req.getParameter("password"));
 
         userService.save(userDTO);
-        accountService.createAccountForUser(userDTO.getId());
 
-
-        resp.sendRedirect("/");
+        resp.sendRedirect("/home");
     }
 
     private boolean emailValidator(String email) {

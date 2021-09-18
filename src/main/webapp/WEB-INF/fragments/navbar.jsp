@@ -10,7 +10,7 @@
 
 <nav class="navbar sticky-top navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="${pageContext.request.contextPath}/"><fmt:message
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/home"><fmt:message
                 key="settings.jsp.label.localization.homepage"/></a>
         <div class="nav-item">
             <c:if test="${sessionScope.user != null}">

@@ -48,9 +48,14 @@
         <url-pattern>*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>localeFilter</filter-name>
+        <url-pattern>/app/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
 
     <error-page>
-        <location>/error-pages/error-page-500.jsp</location>
+        <location>/WEB-INF/error-page/error-page.jsp</location>
     </error-page>
 
     <session-config>

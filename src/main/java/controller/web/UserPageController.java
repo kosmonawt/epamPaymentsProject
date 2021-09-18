@@ -1,7 +1,5 @@
 package controller.web;
 
-import dto.AccountDTO;
-import dto.UserDTO;
 import service.AccountService;
 import service.CardService;
 import service.PaymentService;
@@ -12,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet("/app/user")
 public class UserPageController extends HttpServlet {
@@ -24,9 +21,10 @@ public class UserPageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
+/*        UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
 
-       List<AccountDTO> accounts = accountService.getAccountsByUserId(userDTO.getId());
+        List<AccountDTO> accounts = accountService.getAccountsByUserId(userDTO.getId());
+        req.setAttribute("accounts", accounts);*/
 
         req.getRequestDispatcher("/WEB-INF/user-page.jsp").forward(req, resp);
 

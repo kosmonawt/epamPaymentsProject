@@ -13,7 +13,7 @@ public class Query {
     public static final String CARD_GET_BY_ID = "select * from card where id = ?";
     public static final String CARD_GET_ALL = "select * from card";
     public static final String CARD_GET_BY_CARD_NUMBER = "select * from card where card_number = ?";
-    public static final String CARD_CREATE = "insert into card values(default,?,?,?,?,?)";
+    public static final String CARD_CREATE = "insert into card values(default,?,?,?,?,?,?)";
     public static final String CARD_DELETE = "delete from card where id = ?";
     public static final String CARD_UPDATE = "update card set card_number = ?, pin_num = ?, cvv_num = ?, expiry_date = ?, card_type = ? where id = ?";
     public static final String PAYMENT_CREATE = "insert into payment values(default,?,?,?,?,?)";
@@ -22,4 +22,6 @@ public class Query {
     public static final String PAYMENT_GET_BY_ACCOUNT_TO_ID = "select * from payment where payment_to_account_id = ?";
 
     public static final String ACCOUNT_GET_ALL_BY_USER_ID = "select * from account where card_holder_id = ?";
+    public static final String ACCOUNT_CREATE = "insert into account values (default, ?,?,?,?,?)";
+    public static final String VAULT = "insert into vault values (default) returning number";
 }

@@ -1,14 +1,15 @@
 package entity;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 public class Payment extends Entity {
 
     private static final long serialVersionUID = 5692708766041889396L;
-
-    private Account paymentFromAccount;
-    private Account paymentToAccount;
+    private BigInteger paymentNum;
+    private BigInteger paymentFromAccount;
+    private BigInteger paymentToAccount;
     private LocalDateTime dateTime;
     private BigDecimal amount;
     private PaymentStatus paymentStatus;
@@ -16,19 +17,28 @@ public class Payment extends Entity {
     public Payment() {
     }
 
-    public Account getPaymentFromAccount() {
+
+    public BigInteger getPaymentNum() {
+        return paymentNum;
+    }
+
+    public void setPaymentNum(BigInteger paymentNum) {
+        this.paymentNum = paymentNum;
+    }
+
+    public BigInteger getPaymentFromAccount() {
         return paymentFromAccount;
     }
 
-    public void setPaymentFromAccount(Account paymentFromAccount) {
+    public void setPaymentFromAccount(BigInteger paymentFromAccount) {
         this.paymentFromAccount = paymentFromAccount;
     }
 
-    public Account getPaymentToAccount() {
+    public BigInteger getPaymentToAccount() {
         return paymentToAccount;
     }
 
-    public void setPaymentToAccount(Account paymentToAccount) {
+    public void setPaymentToAccount(BigInteger paymentToAccount) {
         this.paymentToAccount = paymentToAccount;
     }
 
@@ -56,15 +66,5 @@ public class Payment extends Entity {
         this.paymentStatus = paymentStatus;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Payment{");
-        sb.append("id= ").append(getId());
-        sb.append(", paymentFromAccount= ").append(paymentFromAccount.getId());
-        sb.append(", paymentToAccount= ").append(paymentToAccount.getId());
-        sb.append(", date= ").append(dateTime.toString());
-        sb.append(", amount= ").append(amount.toString());
-        sb.append('}');
-        return sb.toString();
-    }
+
 }
