@@ -9,8 +9,8 @@ create table if not exists user_role
 create table if not exists user_entity
 (
     id       serial      not null,
-    name    varchar     not null,
-    surname    varchar     not null,
+    name     varchar     not null,
+    surname  varchar     not null,
     email    varchar     not null,
     password varchar     not null,
     role     varchar(50) not null,
@@ -26,25 +26,6 @@ create table if not exists card_type
     unique (type)
 );
 
-create table if not exists card
-(
-    id          serial primary key not null,
-    card_number bigint             not null,
-    pin_num     int                not null,
-    cvv_num     int                not null,
-    expiry_date date               not null,
-    card_type   varchar(100)       not null,
-    constraint fk_card_type foreign key (card_type) references card_type (type),
-    unique (card_number)
-);
-
-create table if not exists currency
-(
-    id   serial primary key not null,
-    name varchar            not null,
-    unique (name)
-);
-
 create table if not exists language
 (
     id         serial primary key not null,
@@ -55,26 +36,46 @@ create table if not exists language
 
 create table if not exists status
 (
+    id          serial primary key not null,
+    name        varchar            not null,
+    language_id int                not null,
+    unique (name),
+    constraint fk_language foreign key (language_id) references language (id)
+);
+
+create table if not exists currency
+(
     id   serial primary key not null,
     name varchar            not null,
-    language_id int not null,
-    unique (name),
-    constraint fk_language foreign key (language_id) references language(id)
+    unique (name)
 );
 
 create table if not exists account
 (
     id             serial primary key not null,
-    card_holder_id int                not null,
-    card_id        int                not null,
+    account_number bigint             not null,
+    user_login     varchar            not null,
     amount         decimal            not null,
     currency_name  varchar            not null,
     status         varchar            not null,
-    constraint fk_card_holder foreign key (card_holder_id) references user_entity (id),
-    constraint fk_card_id foreign key (card_id) references card (id),
+    constraint fk_user_login foreign key (user_login) references user_entity (email),
     constraint fk_currency_name foreign key (currency_name) references currency (name),
     constraint fk_status foreign key (status) references status (name),
-    unique (id)
+    unique (account_number)
+);
+
+create table if not exists card
+(
+    id          serial primary key not null,
+    card_number bigint             not null,
+    pin_num     int                not null,
+    cvv_num     int                not null,
+    expiry_date varchar            not null,
+    card_type   varchar(100)       not null,
+    account_num bigint             not null,
+    constraint fk_card_type foreign key (card_type) references card_type (type),
+    constraint fk_account_num foreign key (account_num) references account (account_number),
+    unique (card_number)
 );
 
 create table if not exists payment_status
@@ -87,6 +88,7 @@ create table if not exists payment_status
 create table if not exists payment
 (
     id                      serial primary key not null,
+    payment_number          bigint unique      not null,
     payment_from_account_id int                not null,
     payment_to_account_id   int                not null,
     time                    timestamp          not null,
@@ -97,5 +99,75 @@ create table if not exists payment
     constraint fk_payment_status foreign key (payment_status) references payment_status (status)
 );
 
--- select * from user_entity where login = 'kjabkjsbavd';
+create table if not exists vault
+(
+    number serial primary key not null unique,
+    acc    bigint
+);
 
+
+insert into user_role
+values (default, 'ADMIN');
+insert into user_role
+values (default, 'USER');
+
+insert into user_entity
+values (default, 'adm', 'in', 'admin@admin.admin', 'admin', 'ADMIN');
+
+insert into card_type
+values (default, 'VISA');
+insert into card_type
+values (default, 'MASTERCARD');
+insert into currency
+values (default, 'UAH');
+insert into currency
+values (default, 'USD');
+insert into currency
+values (default, 'EUR');
+insert into language
+values (default, 'uk', 'Ukraine');
+insert into language
+values (default, 'en', 'English');
+
+insert into status
+values (default, 'PENDING', (select id from language where short_name like 'en'));
+
+insert into status
+values (default, 'ACTIVE', (select id from language where short_name like 'en'));
+insert into status
+values (default, 'BLOCKED', (select id from language where short_name like 'en'));
+insert into status
+values (default, 'АКТИВНИЙ', (select id from language where short_name like 'uk'));
+insert into status
+values (default, 'АКТИВУЄТЬСЯ', (select id from language where short_name like 'uk'));
+insert into status
+values (default, 'ЗАБЛОКОВАНИЙ', (select id from language where short_name like 'uk'));
+
+/*insert into vault
+values (default)
+RETURNING *;
+    insert into vault values (default) returning number;*/
+/*select *
+from user_entity
+where email = 'a@a.a';
+select *
+from account
+where card_holder_id = (select id from user_entity where email = 'a@a.a');*/
+/*-- select * from user_entity where login = 'kjabkjsbavd';
+insert into user_role
+values (default, 'ADMIN');
+insert into user_role
+values (default, 'USER');
+-- insert into user_entity values (default, 'asffaf','asffasfa','asfasfasf@dsvsddsv.com','aasfsaf','admin');
+
+update user_entity
+set name     = 'name2',
+    surname  ='surname 2',
+    email    = 'email2@email2',
+    password = 'password',
+    role     ='ADMIN'
+where id = 3;
+
+delete
+from user_entity
+where id = 3;*/

@@ -1,27 +1,27 @@
 package service;
 
-import dao.DAO;
+import dao.UserDAO;
 import dao.impl.UserDaoImpl;
 import dto.UserDTO;
 
 
 public class UserService {
 
-    public static UserService userService;
-    private DAO<UserDTO> userDAO = new UserDaoImpl();
+    private static UserService instance;
+    private final UserDAO<UserDTO> userDAO = new UserDaoImpl();
 
 
     public static synchronized UserService getInstance() {
 
-        if (userService == null) {
-            userService = new UserService();
+        if (instance == null) {
+            instance = new UserService();
         }
-        return userService;
+        return instance;
 
     }
 
     public boolean existsByEmail(String email) {
-        return userDAO.exist(email);
+        return userDAO.existByEmail(email);
     }
 
 
@@ -30,11 +30,24 @@ public class UserService {
     }
 
     public UserDTO getUserByEmail(String email) {
-        return userDAO.getByName(email);
+        try {
+            return userDAO.getByEmail(email);
+        } catch (NullPointerException e) {
+            return new UserDTO();
+        }
     }
 
     public boolean find(String email, String password) {
-        UserDTO userDTO = getUserByEmail(email);
-        return userDTO.getPassword().equals(password);
+        UserDTO userDTO;
+        try {
+            userDTO = getUserByEmail(email);
+            return userDTO.getPassword().equals(password);
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
+    public UserDTO getUserById(Long userId) {
+        return userDAO.getById(userId);
     }
 }

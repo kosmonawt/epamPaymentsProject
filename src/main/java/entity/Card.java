@@ -12,9 +12,18 @@ public class Card extends Entity {
     private Integer cvv;
     private LocalDate expiryDate;
     private CardType cardType;
+    private BigInteger accountNum;
 
     public Card() {
 
+    }
+
+    public BigInteger getAccountNum() {
+        return accountNum;
+    }
+
+    public void setAccountNum(BigInteger accountNum) {
+        this.accountNum = accountNum;
     }
 
     public BigInteger getCardNumber() {
@@ -57,13 +66,4 @@ public class Card extends Entity {
         this.cardType = cardType;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Card{");
-        sb.append(", cardNumber=").append(cardNumber);
-        sb.append(", expiryDate=").append(expiryDate);
-        sb.append(", cardType=").append(cardType);
-        sb.append('}');
-        return sb.toString();
-    }
 }

@@ -4,6 +4,7 @@ import controller.Messages;
 import controller.RegexPattern;
 import dto.UserDTO;
 import locale.SupportedLocale;
+import service.AccountService;
 import service.UserService;
 
 import javax.servlet.ServletException;
@@ -17,7 +18,8 @@ import java.io.IOException;
 public class RegistrationController extends HttpServlet {
     private final static String SUPPORTED_LANGUAGES = "locales";
 
-    UserService userService = UserService.getInstance();
+    private final UserService userService = UserService.getInstance();
+    private final AccountService accountService = AccountService.getInstance();
 
     @Override
     public void init() throws ServletException {
@@ -46,7 +48,7 @@ public class RegistrationController extends HttpServlet {
 
         userService.save(userDTO);
 
-        resp.sendRedirect("/");
+        resp.sendRedirect("/home");
     }
 
     private boolean emailValidator(String email) {

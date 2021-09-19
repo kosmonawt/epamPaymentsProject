@@ -2,19 +2,19 @@ package dao;
 
 import java.util.List;
 
-public interface DAO<T> {
+public interface UserDAO<T> {
 
     List<T> getAll();
 
     T getById(Long id);
 
-    T getByName(String name);
+    T getByEmail(String email);
 
     void create(T t);
 
-    void update(T t);
+    void update(T T);
 
     void delete(Long id);
 
-    boolean exist(String name);
+    boolean existByEmail(String email);
 }

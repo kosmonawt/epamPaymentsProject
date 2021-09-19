@@ -1,14 +1,13 @@
 package entity;
 
 import java.math.BigDecimal;
-import java.util.Currency;
+import java.math.BigInteger;
 
 public class Account extends Entity {
     private static final long serialVersionUID = 4716395168539434663L;
     private final BigDecimal INIT_AMOUNT_CAPACITY = BigDecimal.ZERO;
-
-    private User accountHolder;
-    private Card card;
+    private BigInteger accountNumber;
+    private String userLogin;
     private BigDecimal amount;
     private Currency currency;
     private Status status;
@@ -16,27 +15,26 @@ public class Account extends Entity {
     public Account() {
     }
 
-    public Account(Card card, Currency currency) {
-        this.card = card;
+    public Account(Currency currency) {
         this.currency = currency;
         this.amount = INIT_AMOUNT_CAPACITY;
         this.status = Status.PENDING;
     }
 
-    public User getAccountHolder() {
-        return accountHolder;
+    public BigInteger getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setAccountHolder(User accountHolder) {
-        this.accountHolder = accountHolder;
+    public void setAccountNumber(BigInteger accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
-    public Card getCard() {
-        return card;
+    public String getUserLogin() {
+        return userLogin;
     }
 
-    public void setCard(Card card) {
-        this.card = card;
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
     }
 
     public Currency getCurrency() {
@@ -65,16 +63,4 @@ public class Account extends Entity {
         }
     }
 
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Account{");
-        sb.append("id=").append(getId());
-        sb.append(", card=").append(card.toString());
-        sb.append(", amount=").append(amount.toString());
-        sb.append(", currency=").append(currency.toString());
-        sb.append(", status=").append(status.toString());
-        sb.append('}');
-        return sb.toString();
-    }
 }

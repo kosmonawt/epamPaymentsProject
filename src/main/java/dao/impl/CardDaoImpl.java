@@ -1,10 +1,11 @@
 package dao.impl;
 
 import controller.database.DBManager;
-import dao.DAO;
+import dao.CardDAO;
 import dto.CardDTO;
 import entity.Card;
 import exception.DBException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,11 +13,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Card DAO
+ * Card Data Access Object
  * communication with database
  */
 
-public class CardDaoImpl implements DAO<CardDTO> {
+public class CardDaoImpl implements CardDAO<CardDTO> {
     private static final Logger LOGGER = Logger.getLogger(CardDaoImpl.class.getSimpleName());
     DBManager dbManager = DBManager.getInstance();
 
@@ -35,7 +36,12 @@ public class CardDaoImpl implements DAO<CardDTO> {
     }
 
     @Override
-    public CardDTO getById(Long id) {
+    public List<CardDTO> getAllByAccountNumber(@NotNull Long accNumber) {
+        return null;
+    }
+
+    @Override
+    public CardDTO getCardById(Long id) {
 
         CardDTO cardDTO = new CardDTO();
         try {
@@ -51,12 +57,15 @@ public class CardDaoImpl implements DAO<CardDTO> {
     }
 
     @Override
-    public CardDTO getByName(String cardNumber) {
+    public CardDTO getByCardNumber(String cardNumber) {
         CardDTO cardDTO = new CardDTO();
         try {
             CardDaoConverter converter = new CardDaoConverter();
             Card card = dbManager.getCardByCardNumber(cardNumber);
-            return converter.convertFrom(card);
+            if (card != null) {
+                return converter.convertFrom(card);
+            }
+
         } catch (DBException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
@@ -65,6 +74,11 @@ public class CardDaoImpl implements DAO<CardDTO> {
         return cardDTO;
     }
 
+    /**
+     * convert card from card DTO and save in database
+     *
+     * @param cardDTO
+     */
     @Override
     public void create(CardDTO cardDTO) {
         CardDaoConverter converter = new CardDaoConverter();
@@ -99,11 +113,12 @@ public class CardDaoImpl implements DAO<CardDTO> {
             e.printStackTrace();
         }
     }
-/**
- *
- */
+
+    /**
+     *
+     */
     @Override
-    public boolean exist(String cardNumber) {
+    public boolean existByCardNumber(String cardNumber) {
         //TODO
         return false;
     }

@@ -1,7 +1,7 @@
 package dao.impl;
 
 import controller.database.DBManager;
-import dao.DAO;
+import dao.UserDAO;
 import dto.UserDTO;
 import entity.User;
 import exception.DBException;
@@ -15,9 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class UserDaoImpl implements DAO<UserDTO> {
+/**
+ * User Data Access Object
+ * communication with database
+ */
+
+public class UserDaoImpl implements UserDAO<UserDTO> {
     private static final Logger LOGGER = Logger.getLogger(UserDaoImpl.class.getSimpleName());
-    DBManager dbManager = DBManager.getInstance();
+    private final DBManager dbManager = DBManager.getInstance();
 
     @Override
     public List<UserDTO> getAll() {
@@ -41,25 +46,26 @@ public class UserDaoImpl implements DAO<UserDTO> {
 
     @Override
     public UserDTO getById(Long id) {
-        UserDTO userDTO = null;
+        UserDTO userDTO = new UserDTO();
         try {
             UserDaoConverter converter = new UserDaoConverter();
             User user = dbManager.getUser(id);
             userDTO = converter.convertFrom(user);
-        } catch (DBException e) {
+        } catch (DBException | NullPointerException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
         }
         return userDTO;
     }
 
+
     @Override
-    public UserDTO getByName(String email) {
+    public UserDTO getByEmail(String email) {
         UserDaoConverter converter = new UserDaoConverter();
         User user = new User();
         try {
             user = dbManager.getUserByLogin(email);
-        } catch (DBException e) {
+        } catch (DBException | NullPointerException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
         }
@@ -101,7 +107,7 @@ public class UserDaoImpl implements DAO<UserDTO> {
     }
 
     @Override
-    public boolean exist(String name) {
+    public boolean existByEmail(String name) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;

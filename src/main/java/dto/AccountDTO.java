@@ -1,30 +1,42 @@
 package dto;
 
+import entity.Currency;
+
 import java.math.BigDecimal;
 
+
 public class AccountDTO {
-    private Long userId;
-    private Long cardId;
+    private Long id;
+    private Long accountNumber;
+    private String userLogin;
     private BigDecimal amount;
-    private String currency;
+    private Currency currency;
     private String status;
 
     public AccountDTO(){}
 
-    public Long getUserId() {
-        return userId;
+    public Long getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAccountNumber(Long accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
-    public Long getCardId() {
-        return cardId;
+    public String getUserLogin() {
+        return userLogin;
     }
 
-    public void setCardId(Long cardId) {
-        this.cardId = cardId;
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public BigDecimal getAmount() {
@@ -35,11 +47,11 @@ public class AccountDTO {
         this.amount = amount;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 
