@@ -1,7 +1,7 @@
 package dao.impl;
 
 import controller.database.DBManager;
-import dao.DAO;
+import dao.UserDAO;
 import dto.UserDTO;
 import entity.User;
 import exception.DBException;
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * communication with database
  */
 
-public class UserDaoImpl implements DAO<UserDTO> {
+public class UserDaoImpl implements UserDAO<UserDTO> {
     private static final Logger LOGGER = Logger.getLogger(UserDaoImpl.class.getSimpleName());
     private final DBManager dbManager = DBManager.getInstance();
 
@@ -58,8 +58,9 @@ public class UserDaoImpl implements DAO<UserDTO> {
         return userDTO;
     }
 
+
     @Override
-    public UserDTO getByName(String email) {
+    public UserDTO getByEmail(String email) {
         UserDaoConverter converter = new UserDaoConverter();
         User user = new User();
         try {
@@ -106,7 +107,7 @@ public class UserDaoImpl implements DAO<UserDTO> {
     }
 
     @Override
-    public boolean exist(String name) {
+    public boolean existByEmail(String name) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;

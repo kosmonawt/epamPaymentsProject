@@ -1,7 +1,7 @@
 package dao.impl;
 
 import controller.database.DBManager;
-import dao.DAO;
+import dao.AccountDAO;
 import dto.AccountDTO;
 import entity.Account;
 import exception.DBException;
@@ -16,25 +16,12 @@ import java.util.List;
  * communication with database
  */
 
-public class AccountDaoImpl implements DAO<AccountDTO> {
+public class AccountDaoImpl implements AccountDAO<AccountDTO> {
 
     private static final Logger LOGGER = Logger.getLogger(AccountDaoImpl.class.getSimpleName());
     private final DBManager dbManager = DBManager.getInstance();
 
-    @Override
-    public List<AccountDTO> getAll() {
-        return null;
-    }
 
-    @Override
-    public AccountDTO getById(Long id) {
-        return null;
-    }
-
-    @Override
-    public AccountDTO getByName(String name) {
-        return null;
-    }
 
     @Override
     public void create(AccountDTO accountDTO) {
@@ -61,7 +48,12 @@ public class AccountDaoImpl implements DAO<AccountDTO> {
     }
 
     @Override
-    public boolean exist(String name) {
+    public void get(Long id) {
+
+    }
+
+    @Override
+    public boolean existByAccountNumber(Long accNum) {
         return false;
     }
 
@@ -75,8 +67,21 @@ public class AccountDaoImpl implements DAO<AccountDTO> {
         return accountDTOS;
     }
 
-    public void createAccountWithCardId(Long cardId) {
 
+    public List<AccountDTO> getAccountsByUserEmail(String email) {
+        List<AccountDTO> accountDTOS = new ArrayList<>();
+        List<Account> accounts;
+        AccountConverter converter = new AccountConverter();
+        try {
+            accounts = dbManager.getAllUserAccountsByEmail(email);
+            for (int i = 0; i < accounts.size(); i++) {
+                accountDTOS.add(converter.convertFrom(accounts.get(i)));
+            }
+        } catch (DBException e) {
+            LOGGER.debug("Can't get all users accounts");
+            LOGGER.warn(e.getMessage());
+            e.printStackTrace();
+        }
+        return accountDTOS;
     }
-
 }

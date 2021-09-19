@@ -31,6 +31,10 @@ public class AccountService {
         return accountDao.getAccountsByUserId(id);
     }
 
+    public List<AccountDTO> getAccountsByUserEmail(String email) {
+       return accountDao.getAccountsByUserEmail(email);
+    }
+
 
     /**
      * Create account for user with selected currency

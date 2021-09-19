@@ -31,8 +31,8 @@ public class AccountController extends HttpServlet {
         if (userDTO.getId() != null) {
             List<AccountDTO> accounts;
             try {
-/*                accounts = accountService.getAccountsByUserId(userDTO.getId());
-                req.setAttribute("accounts", accounts);*/
+                accounts = accountService.getAccountsByUserEmail(userDTO.getEmail());
+                req.setAttribute("accounts", accounts);
             } catch (NumberFormatException e) {
                 logger.warn("wrong id ");
                 logger.debug(e.getMessage());

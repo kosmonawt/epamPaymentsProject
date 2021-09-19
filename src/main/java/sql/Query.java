@@ -24,4 +24,5 @@ public class Query {
     public static final String ACCOUNT_GET_ALL_BY_USER_ID = "select * from account where card_holder_id = ?";
     public static final String ACCOUNT_CREATE = "insert into account values (default, ?,?,?,?,?)";
     public static final String VAULT = "insert into vault values (default) returning number";
+    public static final String ACCOUNT_GET_ALL_BY_USER_EMAIL = "select * from account where user_login like ? ";
 }

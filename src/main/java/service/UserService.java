@@ -1,15 +1,14 @@
 package service;
 
-import dao.DAO;
+import dao.UserDAO;
 import dao.impl.UserDaoImpl;
 import dto.UserDTO;
-import entity.User;
 
 
 public class UserService {
 
     private static UserService instance;
-    private final DAO<UserDTO> userDAO = new UserDaoImpl();
+    private final UserDAO<UserDTO> userDAO = new UserDaoImpl();
 
 
     public static synchronized UserService getInstance() {
@@ -22,7 +21,7 @@ public class UserService {
     }
 
     public boolean existsByEmail(String email) {
-        return userDAO.exist(email);
+        return userDAO.existByEmail(email);
     }
 
 
@@ -32,7 +31,7 @@ public class UserService {
 
     public UserDTO getUserByEmail(String email) {
         try {
-            return userDAO.getByName(email);
+            return userDAO.getByEmail(email);
         } catch (NullPointerException e) {
             return new UserDTO();
         }

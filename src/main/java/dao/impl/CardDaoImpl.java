@@ -1,10 +1,11 @@
 package dao.impl;
 
 import controller.database.DBManager;
-import dao.DAO;
+import dao.CardDAO;
 import dto.CardDTO;
 import entity.Card;
 import exception.DBException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  * communication with database
  */
 
-public class CardDaoImpl implements DAO<CardDTO> {
+public class CardDaoImpl implements CardDAO<CardDTO> {
     private static final Logger LOGGER = Logger.getLogger(CardDaoImpl.class.getSimpleName());
     DBManager dbManager = DBManager.getInstance();
 
@@ -35,7 +36,12 @@ public class CardDaoImpl implements DAO<CardDTO> {
     }
 
     @Override
-    public CardDTO getById(Long id) {
+    public List<CardDTO> getAllByAccountNumber(@NotNull Long accNumber) {
+        return null;
+    }
+
+    @Override
+    public CardDTO getCardById(Long id) {
 
         CardDTO cardDTO = new CardDTO();
         try {
@@ -51,7 +57,7 @@ public class CardDaoImpl implements DAO<CardDTO> {
     }
 
     @Override
-    public CardDTO getByName(String cardNumber) {
+    public CardDTO getByCardNumber(String cardNumber) {
         CardDTO cardDTO = new CardDTO();
         try {
             CardDaoConverter converter = new CardDaoConverter();
@@ -112,7 +118,7 @@ public class CardDaoImpl implements DAO<CardDTO> {
      *
      */
     @Override
-    public boolean exist(String cardNumber) {
+    public boolean existByCardNumber(String cardNumber) {
         //TODO
         return false;
     }

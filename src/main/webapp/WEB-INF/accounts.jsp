@@ -10,29 +10,44 @@
 <div class="container">
     <jsp:include page="fragments/navbar.jsp"/>
 
-    <div class="align-content-md-center">
+    <br>
 
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm">
+                <thead>
+                <tr>
+                    <th scope="col"><fmt:message key="settings.jsp.table.localization.accNum"/></th>
+                    <th scope="col"><fmt:message key="settings.jsp.table.localization.currency"/></th>
+                    <th scope="col"><fmt:message key="settings.jsp.table.localization.amount"/></th>
+                    <th scope="col"><fmt:message key="settings.jsp.table.localization.status"/></th>
+                </tr>
+                </thead>
 
-        <h5>
-            ${sessionScope.user.email}
-        </h5>
-        <br>
-        <h5>
-            ${sessionScope.user.id}
-        </h5>
-        <br>
-        <h5>
-            ${sessionScope.user.role}
-        </h5>
-
+                <tbody>
+                <c:forEach items="${requestScope.accounts}" var="account">
+                    <tr>
+                        <th scope="row">${account.accountNumber}</th>
+                        <td>${account.currency}</td>
+                        <td>${account.amount}</td>
+                        <td>${account.status}</td>
+                        <td>
+                            <a href="${pageContext.request.contextPath}/app/user/accounts/card?accNumber=${account.accountNumber}"><fmt:message
+                                    key="settings.jsp.table.localization.cardLink"/></a>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
     </div>
     <br>
     <form action="${pageContext.request.contextPath}/app/user/accounts" method="post">
         <div class="container">
-            <label for="currency"><fmt:message key="settings.jsp.label.localization.choseCurrency"/> </label> <br>
+            <label for="currency"><fmt:message key="settings.jsp.label.localization.choseCurrency"/> </label>
             <select type="text" name="currency" id="currency">
                 <c:forEach var="curr" items="${requestScope.currencies}">
-                    <option value="${curr.name()}" >${curr}</option>
+                    <option value="${curr.name()}">${curr}</option>
                 </c:forEach>
             </select>
         </div>
@@ -41,22 +56,6 @@
             <fmt:message key="settings.jsp.label.localization.createAccountButton"/>
         </button>
     </form>
-
-    <div class="container">
-
-        <div class="align-content-center">
-
-            <c:forEach items="${requestScope.accounts}" var="account">
-
-                <h4>${account.currency}</h4> <br>
-                <h4>${account.amount}</h4> <br>
-                <h4>${account.status}</h4> <br>
-                <h4>${account.cardId}</h4> <br>
-            </c:forEach>
-
-        </div>
-
-    </div>
 
 </div>
 

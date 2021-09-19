@@ -353,6 +353,36 @@ public class DBManager {
         return card;
     }
 
+    public List<Account> getAllUserAccountsByEmail(String email) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Account> accounts = new ArrayList<>();
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.ACCOUNT_GET_ALL_BY_USER_EMAIL);
+            preparedStatement.setString(1, email);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                while (resultSet.next()) {
+                    accounts.add(getAccountFromResultSet(resultSet));
+                    //TODO chek impl of get list of object from result set (stream ?)
+                }
+            }
+            con.commit();
+            return accounts;
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can not create card", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+    }
+
     public List<Account> getAllUserAccountsById(Long id) {
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -554,7 +584,7 @@ public class DBManager {
 
     }
 
-    public Payment getPaymentByAccountFromId(Long id) {
+    public Payment getPaymentByAccountFromId(BigInteger id) {
 
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -563,7 +593,7 @@ public class DBManager {
         try {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.PAYMENT_GET_BY_ACCOUNT_FROM_ID);
-            preparedStatement.setInt(1, id.intValue());
+            preparedStatement.setLong(1, id.longValue());
             if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getResultSet();
                 payment = getPaymentFromResultSet(resultSet);

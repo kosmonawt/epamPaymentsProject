@@ -10,25 +10,46 @@
 <div class="container">
     <jsp:include page="fragments/navbar.jsp"/>
 
+
     <div class="align-content-md-center">
+        <label for="userInfo">User Information</label>
+        <table class="table table-striped" id="userInfo">
+            <tbody>
+            <tr>
+                <th scope="row">
+                    Name
+                </th>
+                <td>${sessionScope.user.name}</td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    Surname
+                </th>
+                <td>${sessionScope.user.surname}</td>
+            </tr>
 
-        <h5>
-            ${sessionScope.user.email}
-        </h5>
-        <br>
-        <h5>
-            ${sessionScope.user.id}
-        </h5>
-        <br>
-        <h5>
-            ${sessionScope.user.role}
-        </h5>
+            <tr>
+                <th scope="row">
+                    Email
+                </th>
 
-    </div>
+                <td>
+                    ${sessionScope.user.email}
+                </td>
+            </tr>
 
-    <div class="container">
-        <a href="<%=request.getContextPath()%>/app/user/accounts"><fmt:message
-                key="settings.jsp.label.localization.accounts"/> </a>
+            <tr>
+                <th scope="row">
+                    Accounts
+                </th>
+                <td>
+                    <a href="<%=request.getContextPath()%>/app/user/accounts"><fmt:message
+                            key="settings.jsp.label.localization.accounts"/> </a>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
     </div>
 
 </div>
