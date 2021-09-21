@@ -51,7 +51,7 @@
     <filter-mapping>
         <filter-name>localeFilter</filter-name>
         <url-pattern>/app/*</url-pattern>
-        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
 
     <error-page>

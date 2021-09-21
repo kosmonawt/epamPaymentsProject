@@ -3,6 +3,7 @@ package dao;
 import entity.Status;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public interface PaymentDAO<T> {
 
@@ -17,4 +18,5 @@ public interface PaymentDAO<T> {
 
     T getPaymentByAccountNumberTo(BigInteger accNumber);
 
+    List<T> getAllPaymentsByUserEmail(String email);
 }

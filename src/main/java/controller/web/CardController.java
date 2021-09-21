@@ -26,14 +26,24 @@ public class CardController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.debug("get card page");
         UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
-        Long accNumber = Long.valueOf(req.getParameter("accNumber"));
-
-        if (userDTO != null && accNumber != null) {
+        if (userDTO != null && req.getParameter("accNumber") != null) {
+            Long accNumber = Long.valueOf(req.getParameter("accNumber"));
             List<CardDTO> cards;
             cards = cardService.getCardsByAccountNumber(accNumber);
-
+            logger.debug("setting cards attribute");
+            req.setAttribute("accNumber", accNumber);
+            req.setAttribute("cards", cards);
+            req.getRequestDispatcher("/WEB-INF/cards.jsp").forward(req, resp);
         }
 
-        super.doGet(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getSession() != null && req.getSession().getAttribute("user") != null) {
+            Long accNumber = Long.valueOf(req.getParameter("accNumber"));
+            cardService.createCardForAccount(accNumber);
+            resp.sendRedirect("/app/user/accounts/card?accNumber=" + accNumber);
+        }
     }
 }

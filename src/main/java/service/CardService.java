@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -92,11 +93,27 @@ public class CardService {
     public List<CardDTO> getCardsByAccountNumber(@NotNull Long accNumber) {
         List<CardDTO> cards = new ArrayList<>();
         try {
-            cards = cardDao.getAllByAccountNumber(accNumber);
+            cards = cardDao.getAllCardsByAccountNumber(accNumber);
         } catch (NullPointerException e) {
             logger.debug("NPE in getCardsByAccountNumber");
             logger.warn(e.getMessage());
         }
         return cards;
+    }
+
+    public void createCardForAccount(Long accNumber) {
+        CardDTO cardDTO = createDefaultCard();
+        cardDTO.setAccountNum(accNumber);
+        save(cardDTO);
+    }
+
+    public void createCardForAccount(Long accNumber, String cardType) {
+        CardType type = Arrays.stream(CardType.values()).filter(x -> x.name().equals(cardType))
+                .findFirst()
+                .orElse(CardType.VISA);
+        CardDTO cardDTO = createDefaultCard();
+        cardDTO.setAccountNum(accNumber);
+        cardDTO.setCardType(type.name());
+        save(cardDTO);
     }
 }

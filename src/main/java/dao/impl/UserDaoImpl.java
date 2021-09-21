@@ -5,6 +5,7 @@ import dao.UserDAO;
 import dto.UserDTO;
 import entity.User;
 import exception.DBException;
+import org.apache.log4j.Logger;
 import sql.Query;
 
 import java.sql.Connection;
@@ -13,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+
 
 /**
  * User Data Access Object
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  */
 
 public class UserDaoImpl implements UserDAO<UserDTO> {
-    private static final Logger LOGGER = Logger.getLogger(UserDaoImpl.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(UserDaoImpl.class);
     private final DBManager dbManager = DBManager.getInstance();
 
     @Override
@@ -38,10 +39,14 @@ public class UserDaoImpl implements UserDAO<UserDTO> {
                 userDTOList.add(userDTO);
             }
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
         return userDTOList;
+    }
+
+    private <T extends Exception> void print(T e) {
+        LOGGER.warn(e.getMessage());
+        e.printStackTrace();
     }
 
     @Override
@@ -52,8 +57,7 @@ public class UserDaoImpl implements UserDAO<UserDTO> {
             User user = dbManager.getUser(id);
             userDTO = converter.convertFrom(user);
         } catch (DBException | NullPointerException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
         return userDTO;
     }
@@ -66,8 +70,7 @@ public class UserDaoImpl implements UserDAO<UserDTO> {
         try {
             user = dbManager.getUserByLogin(email);
         } catch (DBException | NullPointerException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
         return converter.convertFrom(user);
     }
@@ -79,8 +82,7 @@ public class UserDaoImpl implements UserDAO<UserDTO> {
         try {
             dbManager.insertUser(user);
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
     }
 
@@ -91,8 +93,7 @@ public class UserDaoImpl implements UserDAO<UserDTO> {
         try {
             dbManager.updateUser(user);
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
     }
 
@@ -101,8 +102,7 @@ public class UserDaoImpl implements UserDAO<UserDTO> {
         try {
             dbManager.deleteUser(id);
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
     }
 

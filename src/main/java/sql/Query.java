@@ -25,4 +25,8 @@ public class Query {
     public static final String ACCOUNT_CREATE = "insert into account values (default, ?,?,?,?,?)";
     public static final String VAULT = "insert into vault values (default) returning number";
     public static final String ACCOUNT_GET_ALL_BY_USER_EMAIL = "select * from account where user_login like ? ";
+    public static final String CARD_GET_ALL_BY_ACCOUNT_NUMBER = "select * from card where account_num = ?";
+    public static final String PAYMENT_GET_BY_USER_EMAIL = "select * from payment where sender like ?";
+    public static final String GET_AMOUNT_BY_ACCOUNT_NUMBER = "select amount from account where account_number = ?";
+    public static final String UPDATE_ACCOUNT_AMOUNT_BY_ACCOUNT_NUMBER = "update account set amount = ? where account_number = ? ";
 }

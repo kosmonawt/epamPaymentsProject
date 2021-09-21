@@ -13,10 +13,27 @@ public class Payment extends Entity {
     private LocalDateTime dateTime;
     private BigDecimal amount;
     private PaymentStatus paymentStatus;
+    private String sender;
+    private String recipient;
 
     public Payment() {
     }
 
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
 
     public BigInteger getPaymentNum() {
         return paymentNum;

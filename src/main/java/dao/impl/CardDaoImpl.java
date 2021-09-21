@@ -5,12 +5,11 @@ import dao.CardDAO;
 import dto.CardDTO;
 import entity.Card;
 import exception.DBException;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Card Data Access Object
@@ -18,26 +17,29 @@ import java.util.logging.Logger;
  */
 
 public class CardDaoImpl implements CardDAO<CardDTO> {
-    private static final Logger LOGGER = Logger.getLogger(CardDaoImpl.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(CardDaoImpl.class);
     DBManager dbManager = DBManager.getInstance();
 
-    @Override
-    public List<CardDTO> getAll() {
-        List<CardDTO> cardDTO = new ArrayList<>();
-        List<Card> cards = new ArrayList<>();
-        try {
-            cards = dbManager.getAllCards();
-            return cardDTO;
-        } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
-    }
 
     @Override
-    public List<CardDTO> getAllByAccountNumber(@NotNull Long accNumber) {
-        return null;
+    public List<CardDTO> getAllCardsByAccountNumber(@NotNull Long accNumber) {
+        CardDaoConverter converter = new CardDaoConverter();
+        List<Card> cards;
+        List<CardDTO> cardDTOs = new ArrayList<>();
+        try {
+            cards = dbManager.getAllCardsByAccountNumber(accNumber);
+            for (Card card : cards) {
+                cardDTOs.add(converter.convertFrom(card));
+            }
+        } catch (DBException e) {
+            print(e);
+        }
+        return cardDTOs;
+    }
+
+    private <T extends Exception> void print(T e) {
+        LOGGER.warn(e.getMessage());
+        e.printStackTrace();
     }
 
     @Override
@@ -49,8 +51,7 @@ public class CardDaoImpl implements CardDAO<CardDTO> {
             Card card = dbManager.getCardById(id);
             return converter.convertFrom(card);
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
 
         }
         return cardDTO;
@@ -67,8 +68,7 @@ public class CardDaoImpl implements CardDAO<CardDTO> {
             }
 
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
 
         }
         return cardDTO;
@@ -85,10 +85,8 @@ public class CardDaoImpl implements CardDAO<CardDTO> {
         try {
             dbManager.createCard(converter.convertTo(cardDTO));
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
-
     }
 
     @Override
@@ -98,8 +96,7 @@ public class CardDaoImpl implements CardDAO<CardDTO> {
             CardDaoConverter converter = new CardDaoConverter();
             dbManager.updateCard(converter.convertTo(cardDTO));
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
 
     }
@@ -109,8 +106,7 @@ public class CardDaoImpl implements CardDAO<CardDTO> {
         try {
             dbManager.deleteCard(id);
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
     }
 
