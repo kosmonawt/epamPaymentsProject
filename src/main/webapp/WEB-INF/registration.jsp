@@ -16,18 +16,18 @@
 
             <div class="form-group">
                 <label for="name"><fmt:message key="settings.jsp.label.localization.name"/></label>
-                <input type="text" class="form-control" id="name" name="name"
+                <input type="text" maxlength="160" class="form-control" id="name" name="name"
                        placeholder="<fmt:message key="settings.jsp.label.localization.name.enter"/>">
             </div>
             <div class="form-group">
                 <label for="surname"><fmt:message key="settings.jsp.label.localization.surname"/></label>
-                <input type="text" class="form-control" id="surname" name="surname"
+                <input type="text"  maxlength="160" class="form-control" id="surname" name="surname"
                        placeholder="<fmt:message key="settings.jsp.label.localization.surname.enter"/>">
             </div>
             <br>
             <div class="form-group">
                 <label for="email"><fmt:message key="settings.jsp.label.localization.email"/></label>
-                <input type="email" class="form-control" id="email" name="email"
+                <input type="email" maxlength="150" class="form-control" id="email" name="email"
                        placeholder="<fmt:message key="settings.jsp.label.localization.email.enter"/>">
                 <c:if test="${not empty requestScope.emailValidationError}">
                     <small id="emailError" class="form-text text-muted">${requestScope.emailValidationError}"</small>

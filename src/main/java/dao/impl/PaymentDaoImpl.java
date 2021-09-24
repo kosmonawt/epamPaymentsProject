@@ -4,6 +4,7 @@ import controller.database.DBManager;
 import dao.PaymentDAO;
 import dto.PaymentDTO;
 import entity.Payment;
+import entity.PaymentStatus;
 import entity.Status;
 import exception.DBException;
 import org.apache.log4j.Logger;
@@ -87,5 +88,35 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
             print(e);
         }
         return paymentDTOs;
+    }
+
+    @Override
+    public boolean isPresentInDB(Long accountNumber) {
+        try {
+            return dbManager.findAccountByNumber(accountNumber);
+        } catch (DBException e) {
+            print(e);
+            return false;
+        }
+    }
+
+    @Override
+    public List<Payment> getAll() {
+        return null;
+    }
+
+    /**
+     * @param status Payment status
+     * @return all payments from DB by status
+     */
+    @Override
+    public List<Payment> getAllByPaymentStatus(PaymentStatus status) {
+        try {
+            return dbManager.getAllPaymentsByStatus(status);
+        } catch (DBException e) {
+            print(e);
+        }
+//TODO
+        return null;
     }
 }

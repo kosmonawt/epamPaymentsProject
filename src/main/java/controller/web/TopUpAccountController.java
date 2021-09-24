@@ -22,7 +22,7 @@ public class TopUpAccountController extends HttpServlet {
         UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
         Long accountNumber = Long.parseLong(req.getParameter("accNumber"));
         if (accountService.checkIfUserHaveAccount(userDTO.getEmail(), accountNumber)) {
-            if (!accountService.checkIfAccountIsBlocked(userDTO.getEmail(), accountNumber)) {
+            if (!accountService.isAccountBlocked(userDTO.getEmail(), accountNumber)) {
                 req.setAttribute("accNum", accountNumber);
                 req.getRequestDispatcher("/WEB-INF/account-top-up.jsp").forward(req, resp);
             } else {

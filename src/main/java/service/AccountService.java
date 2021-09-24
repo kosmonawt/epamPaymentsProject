@@ -67,12 +67,20 @@ public class AccountService {
         return accountDao.checkIfUserHaveAccount(email, accountNumber);
     }
 
-    public boolean checkIfAccountIsBlocked(String email, Long accountNumber) {
+    public boolean isAccountBlocked(String email, Long accountNumber) {
         return accountDao.checkIfAccountIsBlocked(email, accountNumber);
     }
 
+    public boolean isAccountBlocked(Long accountNumber) {
+        return accountDao.checkIfAccountIsBlocked(accountNumber);
+    }
+
     public void topUpAccount(String email, Long accountNumber, BigDecimal amount) {
-        accountDao.topUpAccount(email, accountNumber,amount);
+        accountDao.topUpAccount(email, accountNumber, amount);
+    }
+
+    public boolean isCurrenciesEquals(Long accNumberFrom, Long accNumberTo) {
+        return accountDao.isCurrenciesEquals(accNumberFrom, accNumberTo);
     }
 }
 

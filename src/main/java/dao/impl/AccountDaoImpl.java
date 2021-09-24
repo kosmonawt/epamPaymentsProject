@@ -157,4 +157,29 @@ public class AccountDaoImpl implements AccountDAO<AccountDTO> {
             print(e);
         }
     }
+
+    @Override
+    public boolean checkIfAccountIsBlocked(Long accountNumber) {
+        try {
+            Account account = dbManager.getAccountByAccountNumber(accountNumber);
+            return account.getStatus().name().equalsIgnoreCase(Status.BLOCKED.name());
+
+        } catch (DBException e) {
+            print(e);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean isCurrenciesEquals(Long accNumberFrom, Long accNumberTo) {
+        try {
+            Account accountFrom = dbManager.getAccountByAccountNumber(accNumberFrom);
+            Account accountTo = dbManager.getAccountByAccountNumber(accNumberTo);
+            return accountFrom.getCurrency().name().equalsIgnoreCase(accountTo.getCurrency().name());
+
+        } catch (DBException e) {
+            print(e);
+            return false;
+        }
+    }
 }

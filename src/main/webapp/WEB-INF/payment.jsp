@@ -13,12 +13,13 @@
 
     <form action="<%=request.getContextPath()%>/app/user/payment" method="post">
         <div class="form-content">
-
             <div class="form-group">
                 <label for="account"><fmt:message key="settings.jsp.form.localization.page.payment.choseAcc"/></label>
                 <select type="text" name="accNumber" id="account">
                     <c:forEach var="acc" items="${requestScope.accounts}">
-                        <option value="${acc.accountNumber}">${acc.accountNumber}, ${acc.currency}</option>
+                        <option value="${acc.accountNumber}">${acc.accountNumber}, ${acc.currency}
+                            : ${acc.amount}, [${acc.status}]
+                        </option>
                     </c:forEach>
                 </select>
             </div>
@@ -50,9 +51,6 @@
         </div>
     </form>
 </div>
-<div class="container">
-    <h3><%=request.getContextPath()%>
-    </h3>
-</div>
+
 </body>
 </html>

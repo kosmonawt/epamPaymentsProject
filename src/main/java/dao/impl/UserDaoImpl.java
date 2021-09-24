@@ -6,12 +6,7 @@ import dto.UserDTO;
 import entity.User;
 import exception.DBException;
 import org.apache.log4j.Logger;
-import sql.Query;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +28,8 @@ public class UserDaoImpl implements UserDAO<UserDTO> {
 
         try {
             userList = dbManager.getAllUsers();
-            while (userList.iterator().hasNext()) {
-                UserDTO userDTO;
-                userDTO = converter.convertFrom(userList.iterator().next());
-                userDTOList.add(userDTO);
+            for (User user : userList) {
+                userDTOList.add(converter.convertFrom(user));
             }
         } catch (DBException e) {
             print(e);
@@ -108,21 +101,7 @@ public class UserDaoImpl implements UserDAO<UserDTO> {
 
     @Override
     public boolean existByEmail(String name) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        String emailFromDB;
-        try {
-            preparedStatement = connection.prepareStatement(Query.USER_EXIST_BY_LOGIN);
-            preparedStatement.setString(1, name);
-            if (preparedStatement.executeUpdate() > 0) {
-                resultSet = preparedStatement.getResultSet();
-                emailFromDB = resultSet.getString(4);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//TODO
         return false;
     }
 

@@ -3,7 +3,10 @@ package entity;
 public enum PaymentStatus {
 
     PREPARED,
-    SENT,
+    SEND,
+    PENDING,
+    APPROVED,
+    BLOCKED,
     DELETED
 
 }

@@ -3,6 +3,7 @@ package service;
 import dao.PaymentDAO;
 import dao.impl.PaymentDaoImpl;
 import dto.PaymentDTO;
+import entity.Payment;
 import entity.PaymentStatus;
 import exception.HaveNotEnoughMoneyException;
 import org.apache.log4j.Logger;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +50,7 @@ public class PaymentService {
         paymentDTO.setPaymentStatus(PaymentStatus.PREPARED.name());
         paymentDTO.setSender(sender);
         paymentDTO.setRecipient(recipient);
+        paymentDTO.setDateTime(LocalDateTime.now());
 
         try {
             if (checkIfOperationPossible(accNumberFrom, amount)) {
@@ -61,7 +64,7 @@ public class PaymentService {
 
     }
 
-    private boolean checkIfOperationPossible(Long accountNumber, BigDecimal amount) {
+    public boolean checkIfOperationPossible(Long accountNumber, BigDecimal amount) {
 
         if (accountService.getAccountAmountByAccountNumber(accountNumber).signum() > 0) {
             BigDecimal amountFromAccount = accountService.getAccountAmountByAccountNumber(accountNumber);
@@ -70,5 +73,14 @@ public class PaymentService {
             return result.signum() > 0;
         }
         return false;
+    }
+
+    public boolean isAccPresentInDB(Long accNumberTo) {
+        return paymentDAO.isPresentInDB(accNumberTo);
+    }
+
+    public List<PaymentDTO> getAllPaymentsWithStatusSend() {
+        List<Payment> payments = paymentDAO.getAllByPaymentStatus(PaymentStatus.SEND);
+        return null;
     }
 }

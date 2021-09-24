@@ -1,5 +1,7 @@
 package dto;
 
+import entity.Role;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -24,6 +26,10 @@ public class UserDTO {
     private String role;
 
     public UserDTO() {
+    }
+
+    public boolean isAdmin() {
+        return role.equalsIgnoreCase(Role.ADMIN.name());
     }
 
     public Long getId() {
@@ -73,4 +79,6 @@ public class UserDTO {
     public void setRole(String role) {
         this.role = role;
     }
+
+
 }

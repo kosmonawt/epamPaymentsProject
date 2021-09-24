@@ -355,6 +355,13 @@ public class DBManager {
         return card;
     }
 
+    /**
+     * Get from database all user accounts by user email
+     *
+     * @param email user email
+     * @return All user accounts
+     */
+
     public List<Account> getAllUserAccountsByEmail(String email) {
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -376,7 +383,7 @@ public class DBManager {
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             rollback(con);
-            throw new DBException("Can not create card", e);
+            throw new DBException("Can not get accounts by user email", e);
         } finally {
             close(resultSet);
             close(preparedStatement);
@@ -446,6 +453,12 @@ public class DBManager {
         }
 
     }
+
+    /**
+     * Save Card entity to DB
+     *
+     * @param card save Card
+     */
 
     public void createCard(Card card) {
         Connection con = null;
@@ -589,18 +602,21 @@ public class DBManager {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.PAYMENT_CREATE);
             int k = 1;
+            preparedStatement.setLong(k++, payment.getPaymentNum().longValue());
             preparedStatement.setLong(k++, payment.getPaymentFromAccount().longValue());
             preparedStatement.setLong(k++, payment.getPaymentToAccount().longValue());
-            preparedStatement.setTimestamp(k++, Timestamp.valueOf(payment.getDateTime()));
+            preparedStatement.setString(k++, payment.getDateTime().toString());
             preparedStatement.setBigDecimal(k++, payment.getAmount());
-            preparedStatement.setString(k++, payment.toString());
-            if (preparedStatement.executeUpdate() > 0) {
-                resultSet = preparedStatement.getGeneratedKeys();
+            preparedStatement.setString(k++, payment.getPaymentStatus().name());
+            preparedStatement.setString(k++, payment.getSender());
+            preparedStatement.setString(k++, payment.getRecipient());
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
                 if (resultSet.next()) {
                     payment.setId(resultSet.getLong(1));
                 }
             }
-
+            con.commit();
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             rollback(con);
@@ -650,7 +666,7 @@ public class DBManager {
         payment.setPaymentNum(BigInteger.valueOf(resultSet.getLong(k++)));
         payment.setPaymentFromAccount(BigInteger.valueOf(resultSet.getLong(k++)));
         payment.setPaymentToAccount(BigInteger.valueOf(resultSet.getLong(k++)));
-        payment.setDateTime(resultSet.getObject(k++, LocalDateTime.class));
+        payment.setDateTime(LocalDateTime.parse(resultSet.getString(k++)));
         payment.setAmount(resultSet.getBigDecimal(k++));
         payment.setPaymentStatus(PaymentStatus.valueOf(resultSet.getString(k++)));
         payment.setSender(resultSet.getString(k++));
@@ -863,5 +879,93 @@ public class DBManager {
             close(con);
         }
 
+    }
+
+    public boolean findAccountByNumber(Long accountNumber) {
+
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        boolean result = false;
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.ACCOUNT_FIND_BY_NUMBER);
+            preparedStatement.setLong(1, accountNumber);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                if (resultSet.next()) {
+                    result = true;
+                }
+            }
+            con.commit();
+            return result;
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+        return result;
+    }
+
+
+    public Account getAccountByAccountNumber(Long accountNumber) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Account account = new Account();
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.ACCOUNT_FIND_BY_NUMBER);
+            preparedStatement.setLong(1, accountNumber);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                if (resultSet.next()) {
+                    account = getAccountFromResultSet(resultSet);
+                }
+            }
+            con.commit();
+            return account;
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can not get account by acc number", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+    }
+
+    public List<Payment> getAllPaymentsByStatus(PaymentStatus status) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Account account = new Account();
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.PAYMENT_GET_ALL_BY_STATUS);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                if (resultSet.next()) {
+                    account = getAccountFromResultSet(resultSet);
+                }
+            }
+            con.commit();
+
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can not get account by acc number", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+        return null;
     }
 }

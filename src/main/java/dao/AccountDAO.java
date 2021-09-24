@@ -26,4 +26,9 @@ public interface AccountDAO<T> {
     boolean checkIfAccountIsBlocked(String email, Long accountNumber);
 
     void topUpAccount(String email, Long accountNumber, BigDecimal amount);
+
+    boolean checkIfAccountIsBlocked(Long accountNumber);
+
+    boolean isCurrenciesEquals(Long accNumberFrom, Long accNumberTo);
+
 }

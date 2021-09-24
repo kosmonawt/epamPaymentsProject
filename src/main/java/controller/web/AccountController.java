@@ -1,10 +1,12 @@
 package controller.web;
 
 import dto.AccountDTO;
+import dto.PaymentDTO;
 import dto.UserDTO;
 import entity.Currency;
 import org.apache.log4j.Logger;
 import service.AccountService;
+import service.PaymentService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +20,7 @@ import java.util.List;
 public class AccountController extends HttpServlet {
     private final Logger logger = Logger.getLogger(AccountController.class);
     private final AccountService accountService = AccountService.getInstance();
+    private final PaymentService paymentService = PaymentService.getInstance();
 
 
     @Override

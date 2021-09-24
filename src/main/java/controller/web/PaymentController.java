@@ -45,15 +45,35 @@ public class PaymentController extends HttpServlet {
         UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
 
         if (userDTO != null && userDTO.getEmail() != null) {
-            Long accNumberFrom = Long.valueOf(req.getParameter("accNum"));
+            Long accNumberFrom = Long.valueOf(req.getParameter("accNumber"));
             Long accNumberTo = Long.valueOf(req.getParameter("accNumTo"));
-            BigDecimal amount = BigDecimal.valueOf(Float.parseFloat(req.getParameter("amount")));
-            String recipient = req.getParameter("email");
-            paymentService.create(accNumberFrom, accNumberTo, amount, userDTO.getEmail(), recipient);
-
+            if (paymentService.isAccPresentInDB(accNumberTo)) {
+                BigDecimal amount = BigDecimal.valueOf(Float.parseFloat(req.getParameter("amount")));
+                if (paymentService.checkIfOperationPossible(accNumberFrom, amount)) {
+                    logger.warn("Payment, operation is possible");
+                    String recipient = req.getParameter("email");
+                    if (!accountService.isAccountBlocked(accNumberFrom) && !accountService.isAccountBlocked(accNumberTo)) {
+                        logger.warn("Accounts is not blocked");
+                        if (accountService.isCurrenciesEquals(accNumberFrom, accNumberTo)) {
+                            logger.warn("Currencies is equals");
+                            paymentService.create(accNumberFrom, accNumberTo, amount, userDTO.getEmail(), recipient);
+                            resp.sendRedirect(req.getContextPath() + "/app/user");
+                        } else {
+                            logger.warn("Currencies is not equals");
+                            resp.sendError(403, "Currencies is different");
+                        }
+                    } else {
+                        logger.warn("Accounts is blocked");
+                        resp.sendError(403, "Operation not allowed for BLOCKED acc");
+                    }
+                } else {
+                    logger.warn("Payment, operation is possible");
+                    resp.sendError(403, "You have not enough money in account");
+                }
+            } else {
+                resp.sendError(403, "Account not present in system");
+            }
         }
 
-
-//TODO
     }
 }

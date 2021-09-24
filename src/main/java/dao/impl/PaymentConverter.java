@@ -5,6 +5,8 @@ import dto.PaymentDTO;
 import entity.Payment;
 import entity.PaymentStatus;
 
+import java.math.RoundingMode;
+
 /**
  * Convert Payment entity to DTO and back
  */
@@ -18,7 +20,7 @@ public class PaymentConverter implements DaoConverter<PaymentDTO, Payment> {
         payment.setPaymentNum(paymentDTO.getPaymentNum());
         payment.setPaymentFromAccount(paymentDTO.getPaymentFromAccount());
         payment.setPaymentToAccount(paymentDTO.getPaymentToAccount());
-        payment.setAmount(paymentDTO.getAmount());
+        payment.setAmount(paymentDTO.getAmount().setScale(2, RoundingMode.HALF_UP));
         payment.setDateTime(paymentDTO.getDateTime());
         payment.setPaymentStatus(PaymentStatus.valueOf(paymentDTO.getPaymentStatus().trim().toUpperCase()));
         payment.setSender(paymentDTO.getSender());
@@ -29,11 +31,11 @@ public class PaymentConverter implements DaoConverter<PaymentDTO, Payment> {
     @Override
     public PaymentDTO convertFrom(Payment payment) {
         PaymentDTO paymentDTO = new PaymentDTO();
-        paymentDTO.setId(paymentDTO.getId());
+        paymentDTO.setId(payment.getId());
         paymentDTO.setPaymentNum(payment.getPaymentNum());
         paymentDTO.setPaymentFromAccount(payment.getPaymentFromAccount());
         paymentDTO.setPaymentToAccount(payment.getPaymentToAccount());
-        paymentDTO.setAmount(payment.getAmount());
+        paymentDTO.setAmount(payment.getAmount().setScale(2, RoundingMode.HALF_UP));
         paymentDTO.setDateTime(payment.getDateTime());
         paymentDTO.setPaymentStatus(payment.getPaymentStatus().name());
         paymentDTO.setSender(payment.getSender());
