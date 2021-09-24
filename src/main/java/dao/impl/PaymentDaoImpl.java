@@ -4,11 +4,15 @@ import controller.database.DBManager;
 import dao.PaymentDAO;
 import dto.PaymentDTO;
 import entity.Payment;
+import entity.PaymentStatus;
 import entity.Status;
 import exception.DBException;
+import org.apache.log4j.Logger;
 
 import java.math.BigInteger;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Payment DAO
@@ -17,7 +21,7 @@ import java.util.logging.Logger;
 
 public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
 
-    private static final Logger LOGGER = Logger.getLogger(PaymentDaoImpl.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(PaymentDaoImpl.class);
     DBManager dbManager = DBManager.getInstance();
 
 
@@ -27,9 +31,13 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
         try {
             dbManager.createPayment(paymentConverter.convertTo(paymentDTO));
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
+    }
+
+    private <T extends Exception> void print(T e) {
+        LOGGER.warn(e.getMessage());
+        e.printStackTrace();
     }
 
     @Override
@@ -42,12 +50,9 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
         try {
             dbManager.deletePayment(id);
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
     }
-
-
 
 
     @Override
@@ -58,8 +63,7 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
             payment = dbManager.getPaymentByAccountFromId(accNum);
             return converter.convertFrom(payment);
         } catch (DBException e) {
-            LOGGER.warning(e.getMessage());
-            e.printStackTrace();
+            print(e);
         }
         return null;
     }
@@ -67,6 +71,52 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
 
     @Override
     public PaymentDTO getPaymentByAccountNumberTo(BigInteger accNumber) {
+        return null;
+    }
+
+    @Override
+    public List<PaymentDTO> getAllPaymentsByUserEmail(String email) {
+        List<PaymentDTO> paymentDTOs = new ArrayList<>();
+        PaymentConverter converter = new PaymentConverter();
+        List<Payment> payments;
+        try {
+            payments = dbManager.getAllPaymentsByUserEmail(email);
+            for (Payment payment : payments) {
+                paymentDTOs.add(converter.convertFrom(payment));
+            }
+        } catch (DBException e) {
+            print(e);
+        }
+        return paymentDTOs;
+    }
+
+    @Override
+    public boolean isPresentInDB(Long accountNumber) {
+        try {
+            return dbManager.findAccountByNumber(accountNumber);
+        } catch (DBException e) {
+            print(e);
+            return false;
+        }
+    }
+
+    @Override
+    public List<Payment> getAll() {
+        return null;
+    }
+
+    /**
+     * @param status Payment status
+     * @return all payments from DB by status
+     */
+    @Override
+    public List<Payment> getAllByPaymentStatus(PaymentStatus status) {
+        try {
+            return dbManager.getAllPaymentsByStatus(status);
+        } catch (DBException e) {
+            print(e);
+        }
+//TODO
         return null;
     }
 }

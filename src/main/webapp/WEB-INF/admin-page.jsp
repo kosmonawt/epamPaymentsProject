@@ -12,58 +12,54 @@
 <div class="container">
     <jsp:include page="fragments/navbar.jsp"/>
 
-
-    <div class="align-content-md-center">
-        <label for="userInfo"><fmt:message key="settings.jsp.table.localization.information.userInformation"/></label>
+    <div class="container">
         <br>
-        <table class="table table-striped" id="userInfo">
+        <label for="paymentInfo"><fmt:message key="settings.jsp.label.localization.page.users"/> </label>
+        <table
+                data-toggle="table"
+                data-pagination="true"
+                data-page-size="10"
+                data-height="800"
+                data-search="true"
+                class="table table-striped"
+                id="usersInfo" style="width:100%">
+
+            <thead>
+            <tr>
+                <th scope="col"><fmt:message key="settings.jsp.table.localization.information.user.name"/></th>
+                <th scope="col"><fmt:message key="settings.jsp.table.localization.information.user.surname"/></th>
+                <th scope="col"><fmt:message key="settings.jsp.table.localization.information.user.email"/></th>
+                <th scope="col"><fmt:message key="settings.jsp.table.localization.information.user.accounts"/></th>
+                <th></th>
+
+            </tr>
+            </thead>
+
             <tbody>
-            <tr>
-                <th scope="row">
-                    <fmt:message key="settings.jsp.table.localization.information.user.name"/>
-                </th>
-                <td>${sessionScope.user.name}</td>
-            </tr>
-            <tr>
-                <th scope="row">
-                    <fmt:message key="settings.jsp.table.localization.information.user.surname"/>
-                </th>
-                <td>${sessionScope.user.surname}</td>
-            </tr>
-
-            <tr>
-                <th scope="row">
-                    <fmt:message key="settings.jsp.table.localization.information.user.email"/>
-                </th>
-
-                <td>
-                    ${sessionScope.user.email}
-                </td>
-            </tr>
-
-            <tr>
-                <th scope="row">
-                    <fmt:message key="settings.jsp.table.localization.information.user.accounts"/>
-                </th>
-                <td>
-                    <a class="btn btn-outline-primary"
-                       href="<%=request.getContextPath()%>/app/user/accounts"><fmt:message
-                            key="settings.jsp.label.localization.accounts"/> </a>
-                </td>
-            </tr>
-
+            <c:forEach items="${requestScope.users}" var="user">
+                <tr>
+                    <th scope="row">${user.name}</th>
+                    <td data-sortable="true">${user.surname}</td>
+                    <td>${user.email}</td>
+                    <td>
+                        <a class="btn btn-outline-success" role="button"
+                           href="${pageContext.request.contextPath}/app/user/accounts?userAcc=${user.email}"><fmt:message
+                                key="settings.jsp.table.localization.information.user.accounts"/></a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-danger" role="button"
+                           href="${pageContext.request.contextPath}/app/admin?blockUser=${user.email}"><fmt:message
+                                key="settings.jsp.table.localization.payment.block"/></a>
+                    </td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>
     <br>
     <div class="container">
-        <a class="btn btn-outline-primary"
-           href="<%=request.getContextPath()%>/app/user/payment"><fmt:message
-                key="settings.jsp.table.localization.showPaymentPage"/> </a>
         <br>
-
-        <label for="paymentInfo"><fmt:message key="settings.jsp.table.localization.payment.history"/> </label>
-        <br>
+        <label for="paymentInfo"><fmt:message key="settings.jsp.table.localization.payment.approve"/> </label>
         <table
                 data-toggle="table"
                 data-pagination="true"
@@ -82,7 +78,6 @@
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.payment.date"/></th>
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.status"/></th>
                 <th></th>
-
             </tr>
             </thead>
 
@@ -105,7 +100,6 @@
                     </td>
                 </tr>
             </c:forEach>
-
             </tbody>
         </table>
     </div>

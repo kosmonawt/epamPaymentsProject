@@ -39,6 +39,7 @@ public class LoginController extends HttpServlet {
         } else if (messages.isEmpty()) {
             if (userService.find(email, password)) {
                 UserDTO userDTO = userService.getUserByEmail(email);
+                userDTO.setPassword(null);
                 req.getSession().setAttribute("user", userDTO);
                 logger.debug("Login successful, redirect to home page");
                 resp.sendRedirect("/home");

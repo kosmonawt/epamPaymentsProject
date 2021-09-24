@@ -7,9 +7,11 @@ import org.apache.log4j.Logger;
 import sql.Query;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -353,6 +355,13 @@ public class DBManager {
         return card;
     }
 
+    /**
+     * Get from database all user accounts by user email
+     *
+     * @param email user email
+     * @return All user accounts
+     */
+
     public List<Account> getAllUserAccountsByEmail(String email) {
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -366,7 +375,6 @@ public class DBManager {
                 resultSet = preparedStatement.getResultSet();
                 while (resultSet.next()) {
                     accounts.add(getAccountFromResultSet(resultSet));
-                    //TODO chek impl of get list of object from result set (stream ?)
                 }
             }
             con.commit();
@@ -375,7 +383,7 @@ public class DBManager {
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             rollback(con);
-            throw new DBException("Can not create card", e);
+            throw new DBException("Can not get accounts by user email", e);
         } finally {
             close(resultSet);
             close(preparedStatement);
@@ -446,6 +454,12 @@ public class DBManager {
 
     }
 
+    /**
+     * Save Card entity to DB
+     *
+     * @param card save Card
+     */
+
     public void createCard(Card card) {
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -504,6 +518,35 @@ public class DBManager {
         }
     }
 
+    public List<Card> getAllCardsByAccountNumber(Long accNumber) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Card> cards = new ArrayList<>();
+        try {
+            connection = getConnection();
+            preparedStatement = connection.prepareStatement(Query.CARD_GET_ALL_BY_ACCOUNT_NUMBER);
+            preparedStatement.setLong(1, accNumber);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                while (resultSet.next()) {
+                    cards.add(getCardFromResultSet(resultSet));
+                }
+            }
+            connection.commit();
+            return cards;
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(connection);
+            throw new DBException("Can't get cards by  : ", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(connection);
+        }
+    }
+
     public void updateCard(Card card) {
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -559,18 +602,21 @@ public class DBManager {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.PAYMENT_CREATE);
             int k = 1;
+            preparedStatement.setLong(k++, payment.getPaymentNum().longValue());
             preparedStatement.setLong(k++, payment.getPaymentFromAccount().longValue());
             preparedStatement.setLong(k++, payment.getPaymentToAccount().longValue());
-            preparedStatement.setTimestamp(k++, Timestamp.valueOf(payment.getDateTime()));
+            preparedStatement.setString(k++, payment.getDateTime().toString());
             preparedStatement.setBigDecimal(k++, payment.getAmount());
-            preparedStatement.setString(k++, payment.toString());
-            if (preparedStatement.executeUpdate() > 0) {
-                resultSet = preparedStatement.getGeneratedKeys();
+            preparedStatement.setString(k++, payment.getPaymentStatus().name());
+            preparedStatement.setString(k++, payment.getSender());
+            preparedStatement.setString(k++, payment.getRecipient());
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
                 if (resultSet.next()) {
                     payment.setId(resultSet.getLong(1));
                 }
             }
-
+            con.commit();
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             rollback(con);
@@ -613,9 +659,20 @@ public class DBManager {
     }
 
     private Payment getPaymentFromResultSet(ResultSet resultSet) throws SQLException {
-        //TODO when Account DAO would be implemented
 
-        return null;
+        int k = 1;
+        Payment payment = new Payment();
+        payment.setId(resultSet.getLong(k++));
+        payment.setPaymentNum(BigInteger.valueOf(resultSet.getLong(k++)));
+        payment.setPaymentFromAccount(BigInteger.valueOf(resultSet.getLong(k++)));
+        payment.setPaymentToAccount(BigInteger.valueOf(resultSet.getLong(k++)));
+        payment.setDateTime(LocalDateTime.parse(resultSet.getString(k++)));
+        payment.setAmount(resultSet.getBigDecimal(k++));
+        payment.setPaymentStatus(PaymentStatus.valueOf(resultSet.getString(k++)));
+        payment.setSender(resultSet.getString(k++));
+        payment.setRecipient(resultSet.getString(k++));
+
+        return payment;
     }
 
 
@@ -716,7 +773,7 @@ public class DBManager {
         //TODO
     }
 
-    public BigInteger getNumberFromVault() {
+    public synchronized BigInteger getNumberFromVault() {
         Connection con = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -741,5 +798,174 @@ public class DBManager {
             close(preparedStatement);
             close(con);
         }
+    }
+
+    public List<Payment> getAllPaymentsByUserEmail(String email) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Payment> payments = new ArrayList<>();
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.PAYMENT_GET_BY_USER_EMAIL);
+            preparedStatement.setString(1, email);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                while (resultSet.next()) {
+                    payments.add(getPaymentFromResultSet(resultSet));
+                }
+            }
+            con.commit();
+            return payments;
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can't get all payments by user email: " + email, e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+    }
+
+    public BigDecimal getAmountByAccountNumber(Long accountNumber) {
+
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        BigDecimal amount = BigDecimal.ZERO;
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.GET_AMOUNT_BY_ACCOUNT_NUMBER);
+            preparedStatement.setLong(1, accountNumber);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                if (resultSet.next()) {
+                    amount = BigDecimal.valueOf(resultSet.getDouble(1));
+                }
+            }
+            con.commit();
+            return amount;
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can't get all amount from account " + accountNumber, e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+    }
+
+    public void updateAccountAmountByAccountNumber(Long accountNumber, BigDecimal newAmount) {
+
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.UPDATE_ACCOUNT_AMOUNT_BY_ACCOUNT_NUMBER);
+            preparedStatement.setBigDecimal(1, newAmount);
+            preparedStatement.setLong(2, accountNumber);
+            preparedStatement.executeUpdate();
+            con.commit();
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can't get all amount from account " + accountNumber, e);
+        } finally {
+            close(preparedStatement);
+            close(con);
+        }
+
+    }
+
+    public boolean findAccountByNumber(Long accountNumber) {
+
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        boolean result = false;
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.ACCOUNT_FIND_BY_NUMBER);
+            preparedStatement.setLong(1, accountNumber);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                if (resultSet.next()) {
+                    result = true;
+                }
+            }
+            con.commit();
+            return result;
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+        return result;
+    }
+
+
+    public Account getAccountByAccountNumber(Long accountNumber) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Account account = new Account();
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.ACCOUNT_FIND_BY_NUMBER);
+            preparedStatement.setLong(1, accountNumber);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                if (resultSet.next()) {
+                    account = getAccountFromResultSet(resultSet);
+                }
+            }
+            con.commit();
+            return account;
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can not get account by acc number", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+    }
+
+    public List<Payment> getAllPaymentsByStatus(PaymentStatus status) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Account account = new Account();
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.PAYMENT_GET_ALL_BY_STATUS);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                if (resultSet.next()) {
+                    account = getAccountFromResultSet(resultSet);
+                }
+            }
+            con.commit();
+
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can not get account by acc number", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+        return null;
     }
 }

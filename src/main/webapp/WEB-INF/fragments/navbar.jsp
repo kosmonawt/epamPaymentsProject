@@ -15,7 +15,13 @@
         <div class="nav-item">
             <c:if test="${sessionScope.user != null}">
                 <a class="navbar-brand" href="${pageContext.request.contextPath}/app/user">
-                <fmt:message key="settings.jsp.label.localization.userPage"/></a>
+                    <fmt:message key="settings.jsp.label.localization.userPage"/></a>
+            </c:if>
+        </div>
+        <div class="nav-item">
+            <c:if test="${sessionScope.user != null && sessionScope.user.admin}">
+                <a class="navbar-brand" href="${pageContext.request.contextPath}/app/admin">
+                    <fmt:message key="settings.jsp.table.localization.page.admin"/></a>
             </c:if>
         </div>
         <div class="nav-item">

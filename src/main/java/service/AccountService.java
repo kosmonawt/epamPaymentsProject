@@ -1,5 +1,6 @@
 package service;
 
+import dao.AccountDAO;
 import dao.impl.AccountDaoImpl;
 import dto.AccountDTO;
 import dto.CardDTO;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class AccountService {
     private static AccountService instance;
-    private final AccountDaoImpl accountDao = new AccountDaoImpl();
+    private final AccountDAO<AccountDTO> accountDao = new AccountDaoImpl();
     private final CardService cardService = CardService.getInstance();
 
 
@@ -32,7 +33,7 @@ public class AccountService {
     }
 
     public List<AccountDTO> getAccountsByUserEmail(String email) {
-       return accountDao.getAccountsByUserEmail(email);
+        return accountDao.getAccountsByUserEmail(email);
     }
 
 
@@ -56,6 +57,30 @@ public class AccountService {
         cardService.save(cardDTO);
 //        cardDTO = cardService.getCardByCardNumber(cardDTO.getCardNumber());
 
+    }
+
+    public BigDecimal getAccountAmountByAccountNumber(Long accountNumber) {
+        return accountDao.getAccountAmountByAccountNumber(accountNumber);
+    }
+
+    public boolean checkIfUserHaveAccount(String email, Long accountNumber) {
+        return accountDao.checkIfUserHaveAccount(email, accountNumber);
+    }
+
+    public boolean isAccountBlocked(String email, Long accountNumber) {
+        return accountDao.checkIfAccountIsBlocked(email, accountNumber);
+    }
+
+    public boolean isAccountBlocked(Long accountNumber) {
+        return accountDao.checkIfAccountIsBlocked(accountNumber);
+    }
+
+    public void topUpAccount(String email, Long accountNumber, BigDecimal amount) {
+        accountDao.topUpAccount(email, accountNumber, amount);
+    }
+
+    public boolean isCurrenciesEquals(Long accNumberFrom, Long accNumberTo) {
+        return accountDao.isCurrenciesEquals(accNumberFrom, accNumberTo);
     }
 }
 

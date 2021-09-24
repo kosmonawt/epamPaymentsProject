@@ -10,8 +10,6 @@ import java.util.List;
 public interface CardDAO<T> {
 
 
-    List<T> getAll();
-
     T getCardById(Long id);
 
     T getByCardNumber(String cardNumber);
@@ -25,5 +23,5 @@ public interface CardDAO<T> {
 
     boolean existByCardNumber(String cardNumber);
 
-    List<T> getAllByAccountNumber(@NotNull Long accNumber);
+    List<T> getAllCardsByAccountNumber(@NotNull Long accNumber);
 }

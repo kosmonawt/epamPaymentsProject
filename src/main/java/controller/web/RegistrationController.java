@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebServlet(urlPatterns = "/register")
 public class RegistrationController extends HttpServlet {
@@ -52,7 +54,9 @@ public class RegistrationController extends HttpServlet {
     }
 
     private boolean emailValidator(String email) {
-        return email.matches(RegexPattern.EMAIL);
+        Pattern pattern = Pattern.compile(RegexPattern.EMAIL);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     private String simpleRegistrationValidator(HttpServletRequest req) {

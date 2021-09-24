@@ -80,22 +80,26 @@ create table if not exists card
 
 create table if not exists payment_status
 (
-    id     serial primary key not null,
-    status varchar            not null,
+    id          serial primary key not null,
+    status      varchar            not null,
+    language_id bigint             not null,
     unique (status)
 );
 
 create table if not exists payment
 (
-    id                      serial primary key not null,
-    payment_number          bigint unique      not null,
-    payment_from_account_id int                not null,
-    payment_to_account_id   int                not null,
-    time                    timestamp          not null,
-    amount                  decimal            not null,
-    payment_status          varchar            not null,
-    constraint fk_from_acc_id foreign key (payment_from_account_id) references account (id),
-    constraint fk_to_acc_id foreign key (payment_to_account_id) references account (id),
+    id                       serial primary key not null,
+    payment_number           bigint unique      not null,
+    payment_from_account_num bigint             not null,
+    payment_to_account_num   bigint             not null,
+    time                     varchar            not null,
+    amount                   decimal            not null,
+    payment_status           varchar            not null,
+    sender                   varchar            not null,
+    recipient                varchar,
+
+    constraint fk_from_acc_num foreign key (payment_from_account_num) references account (account_number),
+    constraint fk_to_acc_num foreign key (payment_to_account_num) references account (account_number),
     constraint fk_payment_status foreign key (payment_status) references payment_status (status)
 );
 
@@ -142,6 +146,26 @@ insert into status
 values (default, 'АКТИВУЄТЬСЯ', (select id from language where short_name like 'uk'));
 insert into status
 values (default, 'ЗАБЛОКОВАНИЙ', (select id from language where short_name like 'uk'));
+insert into payment_status
+values (default, 'PREPARED', (select id from language where short_name like 'en'));
+insert into payment_status
+values (default, 'SENT', (select id from language where short_name like 'en'));
+insert into payment_status
+values (default, 'DELETED', (select id from language where short_name like 'en'));
+insert into payment_status
+values (default, 'ПІДГОТОВЛЕНИЙ', (select id from language where short_name like 'uk'));
+insert into payment_status
+values (default, 'ВІДПРВАЛЕНИЙ', (select id from language where short_name like 'uk'));
+insert into payment_status
+values (default, 'ВИДАЛЕНИЙ', (select id from language where short_name like 'uk'));
+
+update account
+set amount = 65616.23
+where account_number = 32;
+
+select *
+from account
+where user_login like 'c@c.c';
 
 /*insert into vault
 values (default)

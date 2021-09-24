@@ -1,5 +1,6 @@
 package dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface AccountDAO<T> {
@@ -17,5 +18,17 @@ public interface AccountDAO<T> {
     List<T> getAccountsByUserId(Long id);
 
     List<T> getAccountsByUserEmail(String email);
+
+    BigDecimal getAccountAmountByAccountNumber(Long accountNumber);
+
+    boolean checkIfUserHaveAccount(String email, Long accountNumber);
+
+    boolean checkIfAccountIsBlocked(String email, Long accountNumber);
+
+    void topUpAccount(String email, Long accountNumber, BigDecimal amount);
+
+    boolean checkIfAccountIsBlocked(Long accountNumber);
+
+    boolean isCurrenciesEquals(Long accNumberFrom, Long accNumberTo);
 
 }

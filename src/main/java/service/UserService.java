@@ -4,6 +4,8 @@ import dao.UserDAO;
 import dao.impl.UserDaoImpl;
 import dto.UserDTO;
 
+import java.util.List;
+
 
 public class UserService {
 
@@ -49,5 +51,9 @@ public class UserService {
 
     public UserDTO getUserById(Long userId) {
         return userDAO.getById(userId);
+    }
+
+    public List<UserDTO> getAll() {
+        return userDAO.getAll();
     }
 }
