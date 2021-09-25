@@ -37,9 +37,16 @@ public class RegistrationController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter("email");
+        String password = req.getParameter("password");
         if (email == null || !emailValidator(email)) {
             req.setAttribute("emailValidationError", Messages.EMAIL_ERROR);
             req.getRequestDispatcher("/WEB-INF/registration.jsp").forward(req, resp);
+        }
+
+        if (email == null || email.isEmpty()) {
+            resp.sendError(400, "Email is required");
+        } else if (password == null || password.isEmpty()) {
+            resp.sendError(400, "Password is required");
         }
 
         UserDTO userDTO = new UserDTO();

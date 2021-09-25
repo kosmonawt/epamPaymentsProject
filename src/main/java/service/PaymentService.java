@@ -1,6 +1,7 @@
 package service;
 
 import dao.PaymentDAO;
+import dao.impl.PaymentConverter;
 import dao.impl.PaymentDaoImpl;
 import dto.PaymentDTO;
 import entity.Payment;
@@ -64,6 +65,13 @@ public class PaymentService {
 
     }
 
+    /**
+     * Check if user have enough money to transfer in account
+     *
+     * @param accountNumber user account number
+     * @param amount        amount to transfer
+     * @return true if user hove enough money in account for transfer
+     */
     public boolean checkIfOperationPossible(Long accountNumber, BigDecimal amount) {
 
         if (accountService.getAccountAmountByAccountNumber(accountNumber).signum() > 0) {
@@ -80,7 +88,15 @@ public class PaymentService {
     }
 
     public List<PaymentDTO> getAllPaymentsWithStatusSend() {
+        List<PaymentDTO> paymentDTOs = new ArrayList<>();
         List<Payment> payments = paymentDAO.getAllByPaymentStatus(PaymentStatus.SEND);
-        return null;
+        PaymentConverter converter = new PaymentConverter();
+        if (payments != null && !payments.isEmpty()) {
+            for (Payment payment : payments) {
+                paymentDTOs.add(converter.convertFrom(payment));
+            }
+            return paymentDTOs;
+        }
+        return paymentDTOs;
     }
 }

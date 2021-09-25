@@ -100,9 +100,14 @@ public class UserDaoImpl implements UserDAO<UserDTO> {
     }
 
     @Override
-    public boolean existByEmail(String name) {
-//TODO
-        return false;
+    public boolean existByEmail(String email) {
+        try {
+            User user = dbManager.getUserByLogin(email);
+            return user.getEmail() != null;
+        } catch (DBException e) {
+            print(e);
+            return false;
+        }
     }
 
 

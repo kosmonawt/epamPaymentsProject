@@ -23,7 +23,11 @@ public class UserService {
     }
 
     public boolean existsByEmail(String email) {
-        return userDAO.existByEmail(email);
+        try {
+            return userDAO.existByEmail(email);
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
 

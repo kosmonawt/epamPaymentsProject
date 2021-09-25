@@ -944,19 +944,19 @@ public class DBManager {
         Connection con = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        Account account = new Account();
+        List<Payment> payments = new ArrayList<>();
         try {
             con = getConnection();
             preparedStatement = con.prepareStatement(Query.PAYMENT_GET_ALL_BY_STATUS);
+            preparedStatement.setString(1, status.name().trim().toUpperCase());
             if (preparedStatement.execute()) {
                 resultSet = preparedStatement.getResultSet();
-                if (resultSet.next()) {
-                    account = getAccountFromResultSet(resultSet);
+                while (resultSet.next()) {
+                    payments.add(getPaymentFromResultSet(resultSet));
                 }
             }
             con.commit();
-
-
+            return payments;
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             rollback(con);
@@ -966,6 +966,5 @@ public class DBManager {
             close(preparedStatement);
             close(con);
         }
-        return null;
     }
 }

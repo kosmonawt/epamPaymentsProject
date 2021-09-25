@@ -29,8 +29,8 @@ public class AdminPageController extends HttpServlet {
             logger.warn("Admin logged in");
             List<UserDTO> users = userService.getAll();
             req.setAttribute("users", users);
-           // List<PaymentDTO> payments = paymentService.getAllPaymentsWithStatusSend();
-         //   req.setAttribute("payments", payments);
+            List<PaymentDTO> payments = paymentService.getAllPaymentsWithStatusSend();
+            req.setAttribute("payments", payments);
             req.getRequestDispatcher("/WEB-INF/admin-page.jsp").forward(req, resp);
         } else {
             logger.warn("Try to access to admin page without rights");

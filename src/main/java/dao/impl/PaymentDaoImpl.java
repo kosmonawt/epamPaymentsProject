@@ -74,6 +74,11 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
         return null;
     }
 
+
+    /**
+     * @param email user email
+     * @return return all user DTO payments  founded in database
+     */
     @Override
     public List<PaymentDTO> getAllPaymentsByUserEmail(String email) {
         List<PaymentDTO> paymentDTOs = new ArrayList<>();
@@ -90,6 +95,10 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
         return paymentDTOs;
     }
 
+    /**
+     * @param accountNumber Account number1
+     * @return return true if account number present in database
+     */
     @Override
     public boolean isPresentInDB(Long accountNumber) {
         try {
@@ -111,12 +120,13 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
      */
     @Override
     public List<Payment> getAllByPaymentStatus(PaymentStatus status) {
+        List<Payment> payments = new ArrayList<>();
         try {
-            return dbManager.getAllPaymentsByStatus(status);
+            payments = dbManager.getAllPaymentsByStatus(status);
+            return payments;
         } catch (DBException e) {
             print(e);
         }
-//TODO
-        return null;
+        return payments;
     }
 }

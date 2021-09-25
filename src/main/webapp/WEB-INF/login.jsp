@@ -18,13 +18,13 @@
 
                 <div class="form-group">
                     <label for="email"><fmt:message key="settings.jsp.label.localization.email"/></label>
-                    <input type="email" class="form-control" id="email" name="email"
-                           placeholder="<fmt:message key="settings.jsp.label.localization.email.enter"/>">
+                    <input type="email" minlength="1" maxlength="160" class="form-control" id="email" name="email"
+                           placeholder="<fmt:message key="settings.jsp.label.localization.email.enter"/>" required>
                 </div>
                 <div class="form-group">
                     <label for="password"><fmt:message key="settings.jsp.label.localization.password"/></label>
-                    <input type="password" class="form-control" id="password" name="password"
-                           placeholder="<fmt:message key="settings.jsp.label.localization.password.enter"/>">
+                    <input type="password" minlength="1" class="form-control" id="password" name="password"
+                           placeholder="<fmt:message key="settings.jsp.label.localization.password.enter"/>" required>
                 </div>
                 <br>
 
