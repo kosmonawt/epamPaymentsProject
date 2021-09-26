@@ -421,6 +421,33 @@ public class DBManager {
         }
     }
 
+    /**
+     * @param account Account to update
+     */
+    public void updateAccount(Account account) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            con = getConnection();
+            int k = 1;
+            preparedStatement = con.prepareStatement(Query.ACCOUNT_UPDATE);
+            preparedStatement.setString(k++, account.getUserLogin());
+            preparedStatement.setBigDecimal(k++, account.getAmount());
+            preparedStatement.setString(k++, account.getCurrency().name().trim().toUpperCase());
+            preparedStatement.setString(k++, account.getStatus().name().trim().toUpperCase());
+            preparedStatement.setLong(k++, account.getAccountNumber().longValue());
+            preparedStatement.executeUpdate();
+            con.commit();
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+        } finally {
+            close(preparedStatement);
+            close(con);
+        }
+
+    }
+
     public void createAccount(Account account) {
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -769,6 +796,35 @@ public class DBManager {
         }
     }
 
+    public void updatePaymentStatus(Payment payment) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            int k = 1;
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.UPDATE_PAYMENT);
+            preparedStatement.setLong(k++, payment.getPaymentFromAccount().longValue());
+            preparedStatement.setLong(k++, payment.getPaymentToAccount().longValue());
+            preparedStatement.setString(k++, payment.getDateTime().toString());
+            preparedStatement.setBigDecimal(k++, payment.getAmount());
+            preparedStatement.setString(k++, payment.getPaymentStatus().name().trim().toUpperCase());
+            preparedStatement.setString(k++, payment.getSender());
+            preparedStatement.setString(k++, payment.getRecipient());
+            preparedStatement.setLong(k++, payment.getPaymentNum().longValue());
+            preparedStatement.executeUpdate();
+            con.commit();
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Update payment failed ", e);
+        } finally {
+            close(preparedStatement);
+            close(con);
+        }
+
+    }
+
     public void deletePayment(Long id) {
         //TODO
     }
@@ -940,6 +996,12 @@ public class DBManager {
         }
     }
 
+    /**
+     * Get all payments with given status from database
+     *
+     * @param status Payment status
+     * @return all payments with given status
+     */
     public List<Payment> getAllPaymentsByStatus(PaymentStatus status) {
         Connection con = null;
         PreparedStatement preparedStatement = null;
@@ -961,6 +1023,41 @@ public class DBManager {
             LOGGER.warn(e.getMessage());
             rollback(con);
             throw new DBException("Can not get account by acc number", e);
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+            close(con);
+        }
+    }
+
+    /**
+     * Get payment from DB by payment number if present
+     *
+     * @param paymentNumber payment number
+     * @return payment from DB if present
+     */
+    public Payment getPaymentByPaymentNumber(Long paymentNumber) {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Payment payment = new Payment();
+        try {
+            con = getConnection();
+            preparedStatement = con.prepareStatement(Query.PAYMENT_GET_BY_PAYMENT_NUMBER);
+            preparedStatement.setLong(1, paymentNumber);
+            if (preparedStatement.execute()) {
+                resultSet = preparedStatement.getResultSet();
+                if (resultSet.next()) {
+                    payment = getPaymentFromResultSet(resultSet);
+                }
+            }
+            con.commit();
+            return payment;
+
+        } catch (SQLException e) {
+            LOGGER.warn(e.getMessage());
+            rollback(con);
+            throw new DBException("Can not get payment by payment number: " + paymentNumber, e);
         } finally {
             close(resultSet);
             close(preparedStatement);

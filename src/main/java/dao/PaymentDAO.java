@@ -2,7 +2,6 @@ package dao;
 
 import entity.Payment;
 import entity.PaymentStatus;
-import entity.Status;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -12,7 +11,7 @@ public interface PaymentDAO<T> {
 
     void create(T t);
 
-    void updateStatus(Status status);
+    void updatePaymentStatus(Payment payment, PaymentStatus status);
 
     void delete(Long id);
 
@@ -27,4 +26,7 @@ public interface PaymentDAO<T> {
     List<Payment> getAll();
 
     List<Payment> getAllByPaymentStatus(PaymentStatus status);
+
+    Payment getPaymentByPaymentNumber(Long paymentNumber);
+
 }

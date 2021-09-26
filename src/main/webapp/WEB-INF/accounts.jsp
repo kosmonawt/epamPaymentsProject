@@ -54,7 +54,8 @@
                                href="${pageContext.request.contextPath}/app/user/accounts/topUp?accNumber=${account.accountNumber}"><fmt:message
                                     key="settings.jsp.table.localization.payment.refill"/></a>
                         </td>
-
+                    </c:if>>
+                    <c:if test="${sessionScope.user.admin}">
                         <td>
                             <a class="btn btn-outline-danger" role="button"
                                href=""><fmt:message

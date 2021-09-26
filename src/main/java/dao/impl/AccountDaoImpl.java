@@ -9,6 +9,7 @@ import exception.DBException;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,24 +45,36 @@ public class AccountDaoImpl implements AccountDAO<AccountDTO> {
 
     @Override
     public void update(AccountDTO accountDTO) {
+        AccountConverter converter = new AccountConverter();
+        try {
+            dbManager.updateAccount(converter.convertTo(accountDTO));
+        } catch (DBException e) {
+            LOGGER.warn("Update account is unsuccessful");
+            print(e);
+        }
 
     }
 
     @Override
     public void delete(Long id) {
-
+//TODO
     }
 
     @Override
     public void get(Long id) {
-
+//TODO
     }
 
     @Override
     public boolean existByAccountNumber(Long accNum) {
+        //TODO
         return false;
     }
 
+    /**
+     * @param id user ID
+     * @return all accounts that have user with id
+     */
     public List<AccountDTO> getAccountsByUserId(Long id) {
         AccountConverter converter = new AccountConverter();
         List<Account> accounts;
@@ -77,6 +90,10 @@ public class AccountDaoImpl implements AccountDAO<AccountDTO> {
         return accountDTOS;
     }
 
+    /**
+     * @param email user email
+     * @return all accounts that have user with email
+     */
 
     public List<AccountDTO> getAccountsByUserEmail(String email) {
         List<AccountDTO> accountDTOS = new ArrayList<>();
@@ -94,6 +111,11 @@ public class AccountDaoImpl implements AccountDAO<AccountDTO> {
         return accountDTOS;
     }
 
+    /**
+     * @param accountNumber account number
+     * @return amount in account by account number
+     */
+
     @Override
     public BigDecimal getAccountAmountByAccountNumber(Long accountNumber) {
         BigDecimal amount = BigDecimal.ZERO;
@@ -104,6 +126,12 @@ public class AccountDaoImpl implements AccountDAO<AccountDTO> {
         }
         return amount;
     }
+
+    /**
+     * @param email         user email
+     * @param accountNumber account number
+     * @return true if user with email own this account number
+     */
 
     @Override
     public boolean checkIfUserHaveAccount(String email, Long accountNumber) {
@@ -121,6 +149,11 @@ public class AccountDaoImpl implements AccountDAO<AccountDTO> {
         }
     }
 
+    /**
+     * @param email         user email
+     * @param accountNumber account number
+     * @return return true if account is BLOCKED and true when get exception from DB
+     */
     @Override
     public boolean checkIfAccountIsBlocked(String email, Long accountNumber) {
         try {
@@ -181,5 +214,16 @@ public class AccountDaoImpl implements AccountDAO<AccountDTO> {
             print(e);
             return false;
         }
+    }
+
+    @Override
+    public Account getAccountByAccountNumber(BigInteger accountNumber) {
+        Account account = new Account();
+        try {
+            account = dbManager.getAccountByAccountNumber(accountNumber.longValue());
+        } catch (DBException e) {
+            print(e);
+        }
+        return account;
     }
 }

@@ -3,6 +3,7 @@ package service;
 import dao.PaymentDAO;
 import dao.impl.PaymentConverter;
 import dao.impl.PaymentDaoImpl;
+import dto.AccountDTO;
 import dto.PaymentDTO;
 import entity.Payment;
 import entity.PaymentStatus;
@@ -63,6 +64,75 @@ public class PaymentService {
             logger.warn(e.getMessage());
         }
 
+    }
+
+    /**
+     * @param paymentNumber payment number
+     * @param locale        user locale
+     * @return true if user have enough money, false if payments has status BLOCKED or APPROVED(before approving)
+     */
+    public boolean approvePayment(Long paymentNumber, String locale) {
+        Payment payment = paymentDAO.getPaymentByPaymentNumber(paymentNumber);
+        AccountDTO accountFrom = accountService.getAccountByAccountNumber(payment.getPaymentFromAccount());
+        AccountDTO accountTo = accountService.getAccountByAccountNumber(payment.getPaymentToAccount());
+        BigDecimal amountToPay = payment.getAmount();
+        if (accountFrom.getCurrency().name().equalsIgnoreCase(accountTo.getCurrency().name())) {
+            if (payment.getPaymentStatus().equals(PaymentStatus.SEND)) {
+                if (amountToPay.signum() > 0 && accountFrom.getAmount().subtract(amountToPay).signum() >= 0) {
+                    BigDecimal newAccountBalance = accountFrom.getAmount().subtract(amountToPay);
+                    logger.debug("amount at accFrom before operation is " + accountFrom.getAmount().floatValue());
+                    accountFrom.setAmount(newAccountBalance);
+                    logger.debug("amount at accFrom after operation is " + accountFrom.getAmount().floatValue());
+                    newAccountBalance = accountTo.getAmount().add(amountToPay);
+                    logger.debug("amount at accTO before operation is " + accountTo.getAmount().floatValue());
+                    accountTo.setAmount(newAccountBalance);
+                    logger.debug("amount at accTO after operation is " + accountTo.getAmount().floatValue());
+                    logger.debug("updating accounts...");
+                    accountService.update(accountFrom);
+                    accountService.update(accountTo);
+                    logger.debug("operation successful, new accounts balances is " + "accFrom: " + accountFrom.getAmount().floatValue() + " and accTo: " + accountTo.getAmount().floatValue());
+                    logger.debug("changing payment status....");
+                    paymentDAO.updatePaymentStatus(payment, PaymentStatus.APPROVED);
+                    logger.debug("status updated");
+                    Payment temp = paymentDAO.getPaymentByPaymentNumber(payment.getPaymentNum().longValue());
+                    return temp.getPaymentStatus().equals(PaymentStatus.APPROVED);
+                } else {
+                    logger.warn("User have no enough money in account or amount to pay is negative");
+                    return false;
+                }
+            } else {
+                logger.warn("Try to approve payment without status 'SEND'");
+                return false;
+            }
+
+
+        } else {
+            logger.warn("Accounts have different currency");
+            return false;
+        }
+
+    }
+
+    /**
+     * Change payment status to SEND
+     *
+     * @param paymentNumber payment
+     * @return true if operation successful
+     */
+    public boolean sendPayment(Long paymentNumber) {
+        Payment payment = paymentDAO.getPaymentByPaymentNumber(paymentNumber);
+        logger.debug("changing payment status to SEND");
+        if (payment.getPaymentStatus().equals(PaymentStatus.PREPARED)) {
+            paymentDAO.updatePaymentStatus(payment, PaymentStatus.SEND);
+            logger.debug("status updated");
+            logger.debug("Get Payment from DB");
+            Payment temp = paymentDAO.getPaymentByPaymentNumber(payment.getPaymentNum().longValue());
+            logger.debug("Payment status from DB is " + temp.getPaymentStatus().name());
+            return temp.getPaymentStatus().name().equalsIgnoreCase(PaymentStatus.SEND.name());
+        } else {
+            logger.warn("Payment status not equal 'PREPARED' ");
+            return false;
+        }
     }
 
     /**

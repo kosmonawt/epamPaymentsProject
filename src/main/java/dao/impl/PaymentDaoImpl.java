@@ -5,7 +5,6 @@ import dao.PaymentDAO;
 import dto.PaymentDTO;
 import entity.Payment;
 import entity.PaymentStatus;
-import entity.Status;
 import exception.DBException;
 import org.apache.log4j.Logger;
 
@@ -35,15 +34,22 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
         }
     }
 
+    @Override
+    public void updatePaymentStatus(Payment payment, PaymentStatus status) {
+        try {
+            payment.setPaymentStatus(status);
+            dbManager.updatePaymentStatus(payment);
+        } catch (DBException e) {
+            print(e);
+        }
+
+    }
+
     private <T extends Exception> void print(T e) {
         LOGGER.warn(e.getMessage());
         e.printStackTrace();
     }
 
-    @Override
-    public void updateStatus(Status status) {
-
-    }
 
     @Override
     public void delete(Long id) {
@@ -128,5 +134,17 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
             print(e);
         }
         return payments;
+    }
+
+    @Override
+    public Payment getPaymentByPaymentNumber(Long paymentNumber) {
+        Payment payment = new Payment();
+        try {
+            payment = dbManager.getPaymentByPaymentNumber(paymentNumber);
+        } catch (DBException e) {
+            print(e);
+        }
+
+        return payment;
     }
 }

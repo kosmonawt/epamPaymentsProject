@@ -78,6 +78,7 @@
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.payment.date"/></th>
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.status"/></th>
                 <th></th>
+                <th></th>
             </tr>
             </thead>
 
@@ -92,10 +93,25 @@
                     <td>${payment.dateTime}</td>
                     <td>${payment.paymentStatus}</td>
                     <td>
-                        <c:if test="${!payment.paymentStatus.equalsIgnoreCase('BLOCKED') || !payment.paymentStatus.equalsIgnoreCase('ЗАБЛОКОВАНИЙ') }">
-                            <a class="btn btn-outline-success" role="button"
-                               href="${pageContext.request.contextPath}/app/user/sendPayment?paymentNum=${payment.paymentNum}"><fmt:message
-                                    key="settings.jsp.table.localization.payment.send"/></a>
+                        <c:if test="${!payment.paymentStatus.equalsIgnoreCase('BLOCKED') or !payment.paymentStatus.equalsIgnoreCase('ЗАБЛОКОВАНИЙ') }">
+                            <form action="${pageContext.request.contextPath}/app/user/payment" method="post">
+                                <input type="hidden" value="${payment.paymentNum}" name="sendPayment">
+                                <button type="submit" class="btn btn-primary">
+                                    <fmt:message
+                                            key="settings.jsp.table.localization.payment.button.approve"/>
+                                </button>
+                            </form>
+                        </c:if>
+                    </td>
+                    <td>
+                        <c:if test="${!payment.paymentStatus.equalsIgnoreCase('BLOCKED') or !payment.paymentStatus.equalsIgnoreCase('ЗАБЛОКОВАНИЙ') }">
+                            <form action="${pageContext.request.contextPath}/app/user/payment" method="post">
+                                <input type="hidden" value="${payment.paymentNum}" name="sendPayment">
+                                <button type="submit" class="btn btn-primary">
+                                    <fmt:message
+                                            key="settings.jsp.table.localization.payment.block"/>
+                                </button>
+                            </form>
                         </c:if>
                     </td>
                 </tr>
