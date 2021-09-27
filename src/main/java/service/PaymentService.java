@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Payment service
+ */
 public class PaymentService {
     private final AccountService accountService = AccountService.getInstance();
     private static PaymentService instance;
@@ -30,6 +33,10 @@ public class PaymentService {
         return instance;
     }
 
+    /**
+     * @param email user email
+     * @return all user payments
+     */
     public List<PaymentDTO> getAllPaymentsByUserEmail(String email) {
         List<PaymentDTO> payments = new ArrayList<>();
         try {
@@ -76,8 +83,11 @@ public class PaymentService {
         AccountDTO accountFrom = accountService.getAccountByAccountNumber(payment.getPaymentFromAccount());
         AccountDTO accountTo = accountService.getAccountByAccountNumber(payment.getPaymentToAccount());
         BigDecimal amountToPay = payment.getAmount();
+        logger.debug("---------------------------------------");
+        logger.debug("payment status before approve " + payment.getPaymentStatus().name());
+        logger.debug("payment number is  " + payment.getPaymentNum());
         if (accountFrom.getCurrency().name().equalsIgnoreCase(accountTo.getCurrency().name())) {
-            if (payment.getPaymentStatus().equals(PaymentStatus.SEND)) {
+            if (payment.getPaymentStatus().name().equalsIgnoreCase(PaymentStatus.SEND.name())) {
                 if (amountToPay.signum() > 0 && accountFrom.getAmount().subtract(amountToPay).signum() >= 0) {
                     BigDecimal newAccountBalance = accountFrom.getAmount().subtract(amountToPay);
                     logger.debug("amount at accFrom before operation is " + accountFrom.getAmount().floatValue());
@@ -95,6 +105,7 @@ public class PaymentService {
                     paymentDAO.updatePaymentStatus(payment, PaymentStatus.APPROVED);
                     logger.debug("status updated");
                     Payment temp = paymentDAO.getPaymentByPaymentNumber(payment.getPaymentNum().longValue());
+                    logger.debug("payments status after approve is " + temp.getPaymentStatus().name());
                     return temp.getPaymentStatus().equals(PaymentStatus.APPROVED);
                 } else {
                     logger.warn("User have no enough money in account or amount to pay is negative");
@@ -121,6 +132,9 @@ public class PaymentService {
      */
     public boolean sendPayment(Long paymentNumber) {
         Payment payment = paymentDAO.getPaymentByPaymentNumber(paymentNumber);
+
+        logger.debug("changing payment status for payment num " + paymentNumber);
+        logger.debug("payment status before change is " + payment.getPaymentStatus().name());
         logger.debug("changing payment status to SEND");
         if (payment.getPaymentStatus().equals(PaymentStatus.PREPARED)) {
             paymentDAO.updatePaymentStatus(payment, PaymentStatus.SEND);
@@ -169,4 +183,6 @@ public class PaymentService {
         }
         return paymentDTOs;
     }
+
+
 }

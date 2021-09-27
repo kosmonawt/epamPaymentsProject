@@ -30,6 +30,7 @@ public class PaymentController extends HttpServlet {
         UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
 
         if (userDTO != null && userDTO.getId() != null && userDTO.getEmail() != null) {
+            logger.debug(req.getSession().getAttribute("locale"));
             List<AccountDTO> accounts = accountService.getAccountsByUserEmail(userDTO.getEmail());
             req.setAttribute("accounts", accounts);
 

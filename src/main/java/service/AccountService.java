@@ -35,10 +35,6 @@ public class AccountService {
         accountDao.update(account);
     }
 
-    public List<AccountDTO> getAccountsByUserId(Long id) {
-        return accountDao.getAccountsByUserId(id);
-    }
-
     public List<AccountDTO> getAccountsByUserEmail(String email) {
         return accountDao.getAccountsByUserEmail(email);
     }

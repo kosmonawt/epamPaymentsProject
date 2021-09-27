@@ -94,7 +94,9 @@
                     <td data-sortable="true">${payment.paymentFromAccount}</td>
                     <td>${payment.paymentToAccount}</td>
                     <td>${payment.amount}</td>
-                    <td>${payment.dateTime}</td>
+                    <td>
+                            ${payment.dateTime}
+                    </td>
                     <td>${payment.paymentStatus}</td>
                     <td>
                         <c:if test="${!payment.paymentStatus.equalsIgnoreCase('SEND')}">
