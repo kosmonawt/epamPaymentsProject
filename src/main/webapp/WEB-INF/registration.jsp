@@ -43,6 +43,9 @@
                     key="settings.jsp.label.localization.button.register"/></button>
         </div>
     </form>
+
+    <jsp:include page="fragments/footer.jsp"/>
+
 </div>
 </body>
 </html>

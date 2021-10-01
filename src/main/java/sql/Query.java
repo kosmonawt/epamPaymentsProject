@@ -2,8 +2,8 @@ package sql;
 
 public class Query {
     public static final String USER_EXIST_BY_LOGIN = "select * from user_entity where email = ?";
-    public static final String USER_CREATE = "insert into user_entity values(default,?,?,?,?,?)";
-    public static final String USER_UPDATE = "update user_entity set name = ?, surname = ?, email = ? , password = ?, role =?  where id = ?";
+    public static final String USER_CREATE = "insert into user_entity values(default,?,?,?,?,?,?)";
+    public static final String USER_UPDATE = "update user_entity set name = ?, surname = ?, email = ? , password = ?, role =?, status = ?  where id = ?";
     public static final String USER_DELETE = "delete from user_entity where  id = ?";
     public static final String USER_GET_BY_ID = "select * from user_entity where id= ?";
     public static final String USER_GET_ALL = "select * from user_entity ";

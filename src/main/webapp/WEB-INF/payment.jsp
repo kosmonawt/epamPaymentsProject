@@ -50,6 +50,9 @@
                     key="settings.jsp.form.localization.button.payment.sendMoney"/></button>
         </div>
     </form>
+
+    <jsp:include page="fragments/footer.jsp"/>
+
 </div>
 
 </body>

@@ -74,7 +74,7 @@ public class AccountController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
-        if (req.getSession() != null && req.getSession().getAttribute("user") != null) {
+        if (req.getSession() != null && userDTO.getEmail() != null) {
             logger.debug("creating account for user: " + userDTO.getId() + " with currency " + req.getAttribute("currency1"));
             logger.debug("user id: " + userDTO.getId());
             String currency = String.valueOf(req.getParameter("currency"));
@@ -84,6 +84,7 @@ public class AccountController extends HttpServlet {
             resp.sendRedirect("/app/user/accounts");
         } else {
             logger.warn("session or user is null, in POST method in Account Controller ");
+            resp.sendError(403, "You have no access for this method");
         }
 
     }

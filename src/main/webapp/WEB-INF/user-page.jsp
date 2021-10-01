@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--<%@taglib uri="http://example.com/functions" prefix="f" %><%@ taglib prefix="f" uri=""%>--%>
+<%@ taglib prefix="format" uri="dateFormatter" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale"/>
 <html>
@@ -61,9 +61,13 @@
            href="<%=request.getContextPath()%>/app/user/payment"><fmt:message
                 key="settings.jsp.table.localization.showPaymentPage"/> </a>
         <br>
-
-        <label for="paymentInfo"><fmt:message key="settings.jsp.table.localization.payment.history"/> </label>
         <br>
+        <br>
+
+        <h2>
+            <fmt:message key="settings.jsp.table.localization.payment.history"/>
+        </h2>
+
         <table
                 data-toggle="table"
                 data-pagination="true"
@@ -95,7 +99,7 @@
                     <td>${payment.paymentToAccount}</td>
                     <td>${payment.amount}</td>
                     <td>
-                            ${payment.dateTime}
+                            ${format:formatLocalDate(payment.dateTime, 'dd.MM.yyyy HH:mm:ss')}
                     </td>
                     <td>${payment.paymentStatus}</td>
                     <td>
@@ -118,11 +122,9 @@
 
     </div>
 
+    <jsp:include page="fragments/footer.jsp"/>
+
+
 </div>
-
-<footer>
-
-
-</footer>
 </body>
 </html>

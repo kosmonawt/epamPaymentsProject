@@ -176,8 +176,9 @@ public class DBManager {
             preparedStatement.setString(k++, user.getEmail());
             preparedStatement.setString(k++, user.getPassword());
             preparedStatement.setString(k++, user.getRole().name());
+            preparedStatement.setString(k, user.getStatus().name());
             if (preparedStatement.execute()) {
-                resultSet = preparedStatement.getGeneratedKeys();
+                resultSet = preparedStatement.getResultSet();
                 if (resultSet.next()) {
                     user.setId(resultSet.getLong(1));
                 }
@@ -206,7 +207,8 @@ public class DBManager {
             preparedStatement.setString(k++, user.getEmail());
             preparedStatement.setString(k++, user.getPassword());
             preparedStatement.setString(k++, user.getRole().name());
-            preparedStatement.setInt(k++, Math.toIntExact(user.getId()));
+            preparedStatement.setString(k++, user.getStatus().name());
+            preparedStatement.setLong(k++, user.getId());
             preparedStatement.executeUpdate();
             con.commit();
         } catch (SQLException | ArithmeticException e) {
@@ -759,6 +761,7 @@ public class DBManager {
         user.setEmail(resultSet.getString(k++));
         user.setPassword(resultSet.getString(k++));
         user.setRole(Role.valueOf(resultSet.getString(k++)));
+        user.setStatus(Status.valueOf(resultSet.getString(k++)));
         return user;
     }
 

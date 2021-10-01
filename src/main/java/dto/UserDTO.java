@@ -2,28 +2,15 @@ package dto;
 
 import entity.Role;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
 public class UserDTO {
 
     private Long id;
     private String name;
     private String surname;
-
-
-    @NotNull(message = "Login cannot be empty")
-    @NotEmpty(message = "Login cannot be empty")
-    @NotBlank(message = "Login cannot be blank")
     private String email;
-
-
-    @NotNull(message = "Login cannot be empty")
-    @NotEmpty(message = "Login cannot be empty")
-    @NotBlank(message = "Login cannot be blank")
     private String password;
     private String role;
+    private String status;
 
     public UserDTO() {
     }
@@ -80,5 +67,11 @@ public class UserDTO {
         this.role = role;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

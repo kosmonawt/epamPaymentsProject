@@ -21,11 +21,20 @@
     </context-param>
 
     <jsp-config>
+        <taglib>
+            <taglib-uri>dateNow</taglib-uri>
+            <taglib-location>/WEB-INF/tags/dateNow.tld</taglib-location>
+        </taglib>
+        <taglib>
+            <taglib-uri>dateFormatter</taglib-uri>
+            <taglib-location>/WEB-INF/tags/dateFormatter.tld</taglib-location>
+        </taglib>
         <jsp-property-group>
             <url-pattern>*.jsp</url-pattern>
             <page-encoding>UTF-8</page-encoding>
         </jsp-property-group>
     </jsp-config>
+
 
     <filter>
         <filter-name>loginFilter</filter-name>
@@ -42,7 +51,6 @@
         <filter-name>localeFilter</filter-name>
         <filter-class>filter.LocaleFilter</filter-class>
     </filter>
-
     <filter-mapping>
         <filter-name>localeFilter</filter-name>
         <url-pattern>*</url-pattern>

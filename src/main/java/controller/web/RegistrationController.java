@@ -3,6 +3,7 @@ package controller.web;
 import controller.Messages;
 import controller.RegexPattern;
 import dto.UserDTO;
+import entity.Status;
 import locale.SupportedLocale;
 import service.AccountService;
 import service.UserService;
@@ -54,6 +55,7 @@ public class RegistrationController extends HttpServlet {
         userDTO.setSurname(req.getParameter("surname"));
         userDTO.setEmail(req.getParameter("email"));
         userDTO.setPassword(req.getParameter("password"));
+        userDTO.setStatus(Status.ACTIVE.name());
 
         userService.save(userDTO);
 

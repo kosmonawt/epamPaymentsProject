@@ -38,4 +38,28 @@ public class AdminPageController extends HttpServlet {
         }
 
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
+        String adminEmail = "admin@admin.admin";
+
+        if (userDTO.getEmail() != null && userDTO.isAdmin()) {
+            if (userDTO.getEmail().equals(adminEmail)) {
+                String userEmail = req.getParameter("blockUser");
+                String status = req.getParameter("status");
+                if (userEmail != null && status != null) {
+                    userService.changeUserStatus(userEmail, status);
+                    resp.sendRedirect(req.getContextPath() + "/app/admin");
+                } else {
+                    resp.sendError(400);
+                }
+            }
+        } else {
+            logger.warn("User with email: " + userDTO.getEmail() + " try to block user");
+            resp.sendError(403, "You can't block user");
+        }
+
+    }
 }

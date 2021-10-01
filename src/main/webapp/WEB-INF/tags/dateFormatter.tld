@@ -6,14 +6,8 @@
         version="2.1">
 
     <tlib-version>1.0</tlib-version>
-    <short-name>custom</short-name>
-    <uri>WEB-INF/tags/dateFormatter.tld</uri>
-
-    <tag>
-        <name>formatter</name>
-        <tag-class>controller.tag.DateFormatter</tag-class>
-        <body-content>empty</body-content>
-    </tag>
+    <short-name>dateFormatter</short-name>
+    <uri>dateFormatter</uri>
 
     <function>
         <name>formatLocalDate</name>
