@@ -9,9 +9,11 @@ public class User extends Entity {
     private String email;
     private String password;
     private Role role;
+    private Status status;
 
     public User() {
         this.role = Role.USER;
+        this.status = Status.ACTIVE;
     }
 
     public boolean isAdmin() {
@@ -59,14 +61,11 @@ public class User extends Entity {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", surname='").append(surname).append('\'');
-        sb.append(", login='").append(email).append('\'');
-        sb.append(", role=").append(role);
-        sb.append('}');
-        return sb.toString();
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

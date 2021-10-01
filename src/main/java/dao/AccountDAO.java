@@ -1,6 +1,9 @@
 package dao;
 
+import entity.Account;
+
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 public interface AccountDAO<T> {
@@ -31,4 +34,5 @@ public interface AccountDAO<T> {
 
     boolean isCurrenciesEquals(Long accNumberFrom, Long accNumberTo);
 
+    Account getAccountByAccountNumber(BigInteger accountNumber);
 }

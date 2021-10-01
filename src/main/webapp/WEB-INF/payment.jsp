@@ -15,7 +15,7 @@
         <div class="form-content">
             <div class="form-group">
                 <label for="account"><fmt:message key="settings.jsp.form.localization.page.payment.choseAcc"/></label>
-                <select type="text" name="accNumber" id="account">
+                <select  name="accNumber" id="account">
                     <c:forEach var="acc" items="${requestScope.accounts}">
                         <option value="${acc.accountNumber}">${acc.accountNumber}, ${acc.currency}
                             : ${acc.amount}, [${acc.status}]
@@ -50,6 +50,9 @@
                     key="settings.jsp.form.localization.button.payment.sendMoney"/></button>
         </div>
     </form>
+
+    <jsp:include page="fragments/footer.jsp"/>
+
 </div>
 
 </body>

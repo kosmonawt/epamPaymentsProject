@@ -3,6 +3,7 @@ package dao.impl;
 import dao.DaoConverter;
 import dto.UserDTO;
 import entity.Role;
+import entity.Status;
 import entity.User;
 
 /**
@@ -24,11 +25,8 @@ public class UserDaoConverter implements DaoConverter<UserDTO, User> {
             if (userDTO.getRole() != null) {
                 user.setRole(Role.valueOf(userDTO.getRole().toUpperCase()));
             }
-            if (userDTO.getId() != null && user.getId() != null) {
-                if (!userDTO.getId().equals(user.getId())) {
-                    user.setId(userDTO.getId());
-                }
-            }
+            user.setId(userDTO.getId());
+            user.setStatus(Status.valueOf(userDTO.getStatus().trim().toUpperCase()));
         }
         return user;
     }
@@ -44,6 +42,7 @@ public class UserDaoConverter implements DaoConverter<UserDTO, User> {
             userDTO.setEmail(user.getEmail());
             userDTO.setPassword(user.getPassword());
             userDTO.setRole(user.getRole().name());
+            userDTO.setStatus(user.getStatus().name());
         }
         return userDTO;
     }

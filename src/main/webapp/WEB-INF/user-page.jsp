@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--<%@taglib uri="http://example.com/functions" prefix="f" %><%@ taglib prefix="f" uri=""%>--%>
+<%@ taglib prefix="format" uri="dateFormatter" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale"/>
 <html>
@@ -61,9 +61,13 @@
            href="<%=request.getContextPath()%>/app/user/payment"><fmt:message
                 key="settings.jsp.table.localization.showPaymentPage"/> </a>
         <br>
-
-        <label for="paymentInfo"><fmt:message key="settings.jsp.table.localization.payment.history"/> </label>
         <br>
+        <br>
+
+        <h2>
+            <fmt:message key="settings.jsp.table.localization.payment.history"/>
+        </h2>
+
         <table
                 data-toggle="table"
                 data-pagination="true"
@@ -94,24 +98,33 @@
                     <td data-sortable="true">${payment.paymentFromAccount}</td>
                     <td>${payment.paymentToAccount}</td>
                     <td>${payment.amount}</td>
-                    <td>${payment.dateTime}</td>
+                    <td>
+                            ${format:formatLocalDate(payment.dateTime, 'dd.MM.yyyy HH:mm:ss')}
+                    </td>
                     <td>${payment.paymentStatus}</td>
                     <td>
-                        <c:if test="${!payment.paymentStatus.equalsIgnoreCase('BLOCKED') || !payment.paymentStatus.equalsIgnoreCase('ЗАБЛОКОВАНИЙ') }">
-                            <a class="btn btn-outline-success" role="button"
-                               href="${pageContext.request.contextPath}/app/user/sendPayment?paymentNum=${payment.paymentNum}"><fmt:message
-                                    key="settings.jsp.table.localization.payment.send"/></a>
+                        <c:if test="${!payment.paymentStatus.equalsIgnoreCase('SEND')}">
+                            <form action="${pageContext.request.contextPath}/app/user/payment" method="post">
+                                <input type="hidden" value="${payment.paymentNum}" name="sendPayment">
+                                <button type="submit" class="btn btn-primary">
+                                    <fmt:message
+                                            key="settings.jsp.table.localization.payment.send"/>
+                                </button>
+                            </form>
                         </c:if>
                     </td>
                 </tr>
             </c:forEach>
 
             </tbody>
+
         </table>
+
     </div>
 
+    <jsp:include page="fragments/footer.jsp"/>
+
+
 </div>
-
-
 </body>
 </html>

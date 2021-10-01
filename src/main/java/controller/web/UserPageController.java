@@ -31,8 +31,10 @@ public class UserPageController extends HttpServlet {
 
         if (userDTO.getId() != null && userDTO.getEmail() != null) {
             try {
+                logger.debug("getting user payments");
                 List<PaymentDTO> payments;
                 payments = paymentService.getAllPaymentsByUserEmail(userDTO.getEmail());
+
                 req.setAttribute("payments", payments);
             } catch (NumberFormatException e) {
                 logger.warn("wrong id ");

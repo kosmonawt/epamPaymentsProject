@@ -1,13 +1,16 @@
 package service;
 
 import dao.AccountDAO;
+import dao.impl.AccountConverter;
 import dao.impl.AccountDaoImpl;
 import dto.AccountDTO;
 import dto.CardDTO;
+import entity.Account;
 import entity.Currency;
 import entity.Status;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -28,8 +31,8 @@ public class AccountService {
     }
 
 
-    public List<AccountDTO> getAccountsByUserId(Long id) {
-        return accountDao.getAccountsByUserId(id);
+    public void update(AccountDTO account) {
+        accountDao.update(account);
     }
 
     public List<AccountDTO> getAccountsByUserEmail(String email) {
@@ -81,6 +84,17 @@ public class AccountService {
 
     public boolean isCurrenciesEquals(Long accNumberFrom, Long accNumberTo) {
         return accountDao.isCurrenciesEquals(accNumberFrom, accNumberTo);
+    }
+
+    /**
+     * @param accountNumber account number
+     * @return account from DB if present by account number and convert to DTO
+     */
+    public AccountDTO getAccountByAccountNumber(BigInteger accountNumber) {
+        AccountConverter converter = new AccountConverter();
+        Account account = accountDao.getAccountByAccountNumber(accountNumber);
+        return converter.convertFrom(account);
+
     }
 }
 

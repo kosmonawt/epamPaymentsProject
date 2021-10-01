@@ -29,12 +29,36 @@ public class AdminPageController extends HttpServlet {
             logger.warn("Admin logged in");
             List<UserDTO> users = userService.getAll();
             req.setAttribute("users", users);
-           // List<PaymentDTO> payments = paymentService.getAllPaymentsWithStatusSend();
-         //   req.setAttribute("payments", payments);
+            List<PaymentDTO> payments = paymentService.getAllPaymentsWithStatusSend();
+            req.setAttribute("payments", payments);
             req.getRequestDispatcher("/WEB-INF/admin-page.jsp").forward(req, resp);
         } else {
             logger.warn("Try to access to admin page without rights");
             resp.sendError(403, "You have no access to this page");
+        }
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
+        String adminEmail = "admin@admin.admin";
+
+        if (userDTO.getEmail() != null && userDTO.isAdmin()) {
+            if (userDTO.getEmail().equals(adminEmail)) {
+                String userEmail = req.getParameter("blockUser");
+                String status = req.getParameter("status");
+                if (userEmail != null && status != null) {
+                    userService.changeUserStatus(userEmail, status);
+                    resp.sendRedirect(req.getContextPath() + "/app/admin");
+                } else {
+                    resp.sendError(400);
+                }
+            }
+        } else {
+            logger.warn("User with email: " + userDTO.getEmail() + " try to block user");
+            resp.sendError(403, "You can't block user");
         }
 
     }

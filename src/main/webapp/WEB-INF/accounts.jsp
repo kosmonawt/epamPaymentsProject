@@ -43,29 +43,41 @@
                     <td>${account.currency}</td>
                     <td>${account.amount}</td>
                     <td>${account.status}</td>
-                    <td>
-                        <a class="btn btn-outline-info" role="button"
+                    <td><a class="btn btn-outline-info" role="button"
                            href="${pageContext.request.contextPath}/app/user/accounts/card?accNumber=${account.accountNumber}"><fmt:message
-                                key="settings.jsp.table.localization.cards"/></a>
+                            key="settings.jsp.table.localization.cards"/></a>
                     </td>
                     <c:if test="${!account.status.equalsIgnoreCase('BLOCKED')}">
-                        <td>
-                            <a class="btn btn-outline-success" role="button"
-                               href="${pageContext.request.contextPath}/app/user/accounts/topUp?accNumber=${account.accountNumber}"><fmt:message
-                                    key="settings.jsp.table.localization.payment.refill"/></a>
-                        </td>
-
-                        <td>
-                            <a class="btn btn-outline-danger" role="button"
-                               href=""><fmt:message
-                                    key="settings.jsp.table.localization.payment.block"/></a>
-                        </td>
+                        <c:if test="${!sessionScope.user.admin}">
+                            <td>
+                                <a class="btn btn-outline-success" role="button"
+                                   href="${pageContext.request.contextPath}/app/user/accounts/topUp?accNumber=${account.accountNumber}"><fmt:message
+                                        key="settings.jsp.table.localization.payment.refill"/></a>
+                            </td>
+                        </c:if>
+                    </c:if>
+                    <c:if test="${sessionScope.user.admin}">
+                        <c:if test="${!account.status.equalsIgnoreCase('BLOCKED')}">
+                            <td>
+                                <form action="${pageContext.request.contextPath}/app/user/accounts" method="post">
+                                    <input type="hidden" value="${account.accountNumber}" name="blockAccountNumber">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <fmt:message
+                                                key="settings.jsp.table.localization.payment.block"/>
+                                    </button>
+                                </form>
+                            </td>
+                        </c:if>
                     </c:if>
                     <c:if test="${account.status.equalsIgnoreCase('BLOCKED')}">
                         <td>
-                            <a class="btn btn-outline-dark" role="button"
-                               href=""><fmt:message
-                                    key="settings.jsp.table.localization.payment.unblock"/></a>
+                            <form action="${pageContext.request.contextPath}/app/user/accounts" method="post">
+                                <input type="hidden" value="${account.accountNumber}" name="unblockAccountNumber">
+                                <button type="submit" class="btn btn-outline-dark">
+                                    <fmt:message
+                                            key="settings.jsp.table.localization.payment.unblock"/>
+                                </button>
+                            </form>
                         </td>
                     </c:if>
                 </tr>
@@ -93,9 +105,10 @@
 
     </div>
 
+
 </div>
 
-
 <jsp:include page="fragments/footer.jsp"/>
+
 </body>
 </html>

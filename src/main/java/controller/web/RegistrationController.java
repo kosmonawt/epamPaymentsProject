@@ -3,6 +3,7 @@ package controller.web;
 import controller.Messages;
 import controller.RegexPattern;
 import dto.UserDTO;
+import entity.Status;
 import locale.SupportedLocale;
 import service.AccountService;
 import service.UserService;
@@ -30,16 +31,23 @@ public class RegistrationController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/registration.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter("email");
+        String password = req.getParameter("password");
         if (email == null || !emailValidator(email)) {
             req.setAttribute("emailValidationError", Messages.EMAIL_ERROR);
             req.getRequestDispatcher("/WEB-INF/registration.jsp").forward(req, resp);
+        }
+
+        if (email == null || email.isEmpty()) {
+            resp.sendError(400, "Email is required");
+        } else if (password == null || password.isEmpty()) {
+            resp.sendError(400, "Password is required");
         }
 
         UserDTO userDTO = new UserDTO();
@@ -47,6 +55,7 @@ public class RegistrationController extends HttpServlet {
         userDTO.setSurname(req.getParameter("surname"));
         userDTO.setEmail(req.getParameter("email"));
         userDTO.setPassword(req.getParameter("password"));
+        userDTO.setStatus(Status.ACTIVE.name());
 
         userService.save(userDTO);
 

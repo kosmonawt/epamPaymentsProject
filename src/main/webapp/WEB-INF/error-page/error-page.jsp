@@ -25,6 +25,7 @@
         <p>
             <b>The exception class is:</b> <%= request.getAttribute("javax.servlet.error.exception") %><br>
         </p>
+
     </div>
 
 </div>

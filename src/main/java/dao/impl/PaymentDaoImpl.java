@@ -5,7 +5,6 @@ import dao.PaymentDAO;
 import dto.PaymentDTO;
 import entity.Payment;
 import entity.PaymentStatus;
-import entity.Status;
 import exception.DBException;
 import org.apache.log4j.Logger;
 
@@ -35,15 +34,22 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
         }
     }
 
+    @Override
+    public void updatePaymentStatus(Payment payment, PaymentStatus status) {
+        try {
+            payment.setPaymentStatus(status);
+            dbManager.updatePaymentStatus(payment);
+        } catch (DBException e) {
+            print(e);
+        }
+
+    }
+
     private <T extends Exception> void print(T e) {
         LOGGER.warn(e.getMessage());
         e.printStackTrace();
     }
 
-    @Override
-    public void updateStatus(Status status) {
-
-    }
 
     @Override
     public void delete(Long id) {
@@ -74,6 +80,11 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
         return null;
     }
 
+
+    /**
+     * @param email user email
+     * @return return all user DTO payments  founded in database
+     */
     @Override
     public List<PaymentDTO> getAllPaymentsByUserEmail(String email) {
         List<PaymentDTO> paymentDTOs = new ArrayList<>();
@@ -90,6 +101,10 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
         return paymentDTOs;
     }
 
+    /**
+     * @param accountNumber Account number1
+     * @return return true if account number present in database
+     */
     @Override
     public boolean isPresentInDB(Long accountNumber) {
         try {
@@ -111,12 +126,25 @@ public class PaymentDaoImpl implements PaymentDAO<PaymentDTO> {
      */
     @Override
     public List<Payment> getAllByPaymentStatus(PaymentStatus status) {
+        List<Payment> payments = new ArrayList<>();
         try {
-            return dbManager.getAllPaymentsByStatus(status);
+            payments = dbManager.getAllPaymentsByStatus(status);
+            return payments;
         } catch (DBException e) {
             print(e);
         }
-//TODO
-        return null;
+        return payments;
+    }
+
+    @Override
+    public Payment getPaymentByPaymentNumber(Long paymentNumber) {
+        Payment payment = new Payment();
+        try {
+            payment = dbManager.getPaymentByPaymentNumber(paymentNumber);
+        } catch (DBException e) {
+            print(e);
+        }
+
+        return payment;
     }
 }

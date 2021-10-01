@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--<%@taglib uri="http://example.com/functions" prefix="f" %><%@ taglib prefix="f" uri=""%>--%>
+<%@ taglib prefix="format" uri="dateFormatter" %>
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="locale"/>
 <html>
@@ -29,6 +29,7 @@
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.information.user.name"/></th>
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.information.user.surname"/></th>
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.information.user.email"/></th>
+                <th scope="col"><fmt:message key="settings.jsp.table.localization.status"/></th>
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.information.user.accounts"/></th>
                 <th></th>
 
@@ -41,15 +42,22 @@
                     <th scope="row">${user.name}</th>
                     <td data-sortable="true">${user.surname}</td>
                     <td>${user.email}</td>
+                    <td>${user.status}</td>
                     <td>
                         <a class="btn btn-outline-success" role="button"
                            href="${pageContext.request.contextPath}/app/user/accounts?userAcc=${user.email}"><fmt:message
                                 key="settings.jsp.table.localization.information.user.accounts"/></a>
                     </td>
                     <td>
-                        <a class="btn btn-outline-danger" role="button"
-                           href="${pageContext.request.contextPath}/app/admin?blockUser=${user.email}"><fmt:message
-                                key="settings.jsp.table.localization.payment.block"/></a>
+                        <form action="${pageContext.request.contextPath}/app/admin"
+                              method="post">
+                            <input type="hidden" value="${user.email}" name="blockUser">
+                            <input type="hidden" value="BLOCKED" name="status">
+                            <button type="submit" class="btn btn-outline-danger">
+                                <fmt:message
+                                        key="settings.jsp.table.localization.payment.block"/>
+                            </button>
+                        </form>
                     </td>
                 </tr>
             </c:forEach>
@@ -78,6 +86,7 @@
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.payment.date"/></th>
                 <th scope="col"><fmt:message key="settings.jsp.table.localization.status"/></th>
                 <th></th>
+                <th></th>
             </tr>
             </thead>
 
@@ -89,13 +98,30 @@
                     <td data-sortable="true">${payment.paymentFromAccount}</td>
                     <td>${payment.paymentToAccount}</td>
                     <td>${payment.amount}</td>
-                    <td>${payment.dateTime}</td>
+                    <td>
+                            ${format:formatLocalDate(payment.dateTime, 'dd.MM.yyyy HH:mm:ss')}
+                    </td>
                     <td>${payment.paymentStatus}</td>
                     <td>
-                        <c:if test="${!payment.paymentStatus.equalsIgnoreCase('BLOCKED') || !payment.paymentStatus.equalsIgnoreCase('ЗАБЛОКОВАНИЙ') }">
-                            <a class="btn btn-outline-success" role="button"
-                               href="${pageContext.request.contextPath}/app/user/sendPayment?paymentNum=${payment.paymentNum}"><fmt:message
-                                    key="settings.jsp.table.localization.payment.send"/></a>
+                        <c:if test="${!payment.paymentStatus.equalsIgnoreCase('BLOCKED') or !payment.paymentStatus.equalsIgnoreCase('ЗАБЛОКОВАНИЙ') }">
+                            <form action="${pageContext.request.contextPath}/app/user/payment" method="post">
+                                <input type="hidden" value="${payment.paymentNum}" name="sendPayment">
+                                <button type="submit" class="btn btn-outline-success">
+                                    <fmt:message
+                                            key="settings.jsp.table.localization.payment.button.approve"/>
+                                </button>
+                            </form>
+                        </c:if>
+                    </td>
+                    <td>
+                        <c:if test="${!payment.paymentStatus.equalsIgnoreCase('BLOCKED') or !payment.paymentStatus.equalsIgnoreCase('ЗАБЛОКОВАНИЙ') }">
+                            <form action="${pageContext.request.contextPath}/app/user/payment" method="post">
+                                <input type="hidden" value="${payment.paymentNum}" name="sendPayment">
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <fmt:message
+                                            key="settings.jsp.table.localization.payment.block"/>
+                                </button>
+                            </form>
                         </c:if>
                     </td>
                 </tr>
@@ -103,6 +129,8 @@
             </tbody>
         </table>
     </div>
+
+    <jsp:include page="fragments/footer.jsp"/>
 
 </div>
 

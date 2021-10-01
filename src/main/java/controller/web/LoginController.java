@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @WebServlet(urlPatterns = "/login")
 public class LoginController extends HttpServlet {
@@ -28,15 +26,12 @@ public class LoginController extends HttpServlet {
 
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        Map<String, String> messages = new HashMap<>();
 
         if (email == null || email.isEmpty()) {
-            messages.put("email", "Enter email");
-
+            resp.sendError(400, "Email can't be empty");
         } else if (password == null || password.isEmpty()) {
-            messages.put("password", "Enter password");
-
-        } else if (messages.isEmpty()) {
+            resp.sendError(400, "Password can't be empty");
+        } else {
             if (userService.find(email, password)) {
                 UserDTO userDTO = userService.getUserByEmail(email);
                 userDTO.setPassword(null);
@@ -45,17 +40,12 @@ public class LoginController extends HttpServlet {
                 resp.sendRedirect("/home");
             } else {
                 logger.warn("Incorrect password or login");
-                messages.put("errorLogin", "Wrong password");
-                req.setAttribute("messages", messages);
                 logger.debug("start forwarding to login page");
-                req.getRequestDispatcher("WEB-INF/login.jsp").forward(req, resp);
+                resp.sendError(403, "Incorrect password or login");
             }
-
-        } else {
-            logger.warn("empty password or login");
-            req.setAttribute("messages", messages);
-            req.getRequestDispatcher("WEB-INF/login.jsp").forward(req, resp);
         }
 
     }
+
 }
+

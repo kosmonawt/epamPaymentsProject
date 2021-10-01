@@ -3,12 +3,14 @@ package service;
 import dao.UserDAO;
 import dao.impl.UserDaoImpl;
 import dto.UserDTO;
+import entity.Status;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
 
 public class UserService {
-
+    private final Logger logger = Logger.getLogger(UserService.class);
     private static UserService instance;
     private final UserDAO<UserDTO> userDAO = new UserDaoImpl();
 
@@ -23,7 +25,11 @@ public class UserService {
     }
 
     public boolean existsByEmail(String email) {
-        return userDAO.existByEmail(email);
+        try {
+            return userDAO.existByEmail(email);
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
 
@@ -55,5 +61,21 @@ public class UserService {
 
     public List<UserDTO> getAll() {
         return userDAO.getAll();
+    }
+
+
+    public void changeUserStatus(String userEmail, String status) {
+        logger.warn("Status before update is: " + status);
+        try {
+            UserDTO userDTO = userDAO.getByEmail(userEmail);
+            userDTO.setStatus(Status.valueOf(status).name());
+            userDAO.update(userDTO);
+            logger.warn("Status after update is: " + userDTO.getStatus());
+
+        } catch (NullPointerException | IllegalStateException e) {
+            logger.warn(e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 }
