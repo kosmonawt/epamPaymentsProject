@@ -19,10 +19,10 @@
             <table class="table table-hover table-sm">
                 <thead>
                 <tr>
-                    <th scope="col"><fmt:message key="settings.jsp.table.localization.cardNum"/></th>
-                    <th scope="col"><fmt:message key="settings.jsp.table.localization.cardType"/></th>
-                    <th scope="col"><fmt:message key="settings.jsp.table.localization.cardExpiryDate"/></th>
-                    <th scope="col"><fmt:message key="settings.jsp.table.localization.accNum"/></th>
+                    <th data-sortable="true" ><fmt:message key="settings.jsp.table.localization.cardNum"/></th>
+                    <th data-sortable="true" ><fmt:message key="settings.jsp.table.localization.cardType"/></th>
+                    <th data-sortable="true" ><fmt:message key="settings.jsp.table.localization.cardExpiryDate"/></th>
+                    <th data-sortable="true"><fmt:message key="settings.jsp.table.localization.accNum"/></th>
 
                 </tr>
                 </thead>

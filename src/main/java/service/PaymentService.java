@@ -70,7 +70,6 @@ public class PaymentService {
             logger.debug("NPE in create");
             logger.warn(e.getMessage());
         }
-
     }
 
     /**

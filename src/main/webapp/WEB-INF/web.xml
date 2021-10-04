@@ -46,6 +46,16 @@
         <url-pattern>/app/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
+    <filter>
+        <filter-name>blockedUserFilter</filter-name>
+        <filter-class>filter.UserStatusFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>blockedUserFilter</filter-name>
+        <url-pattern>/app/user/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
 
     <filter>
         <filter-name>localeFilter</filter-name>
