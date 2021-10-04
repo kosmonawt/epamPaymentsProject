@@ -1,6 +1,7 @@
 package dto;
 
 import entity.Role;
+import entity.Status;
 
 public class UserDTO {
 
@@ -17,6 +18,10 @@ public class UserDTO {
 
     public boolean isAdmin() {
         return role.equalsIgnoreCase(Role.ADMIN.name());
+    }
+
+    public boolean isBlocked() {
+        return status.equalsIgnoreCase(Status.BLOCKED.name());
     }
 
     public Long getId() {
