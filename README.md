@@ -1,2 +1,2 @@
 
-<epam> Java Summer Program - Final Project
+EPAM Java Summer Program - Final Project
