@@ -106,7 +106,9 @@ public class DBManager {
 
   public Connection getConnection() throws SQLException {
     String dbUrl = System.getenv("JDBC_DATABASE_URL");
-    return DriverManager.getConnection(dbUrl);
+    Connection connection = DriverManager.getConnection(dbUrl);
+    connection.setAutoCommit(false);
+    return connection;
   }
 
   public List<User> getAllUsers() {
