@@ -32,3 +32,4 @@ buildNumber.properties
 # Editor-based HTTP Client requests
 /httpRequests/
 /log/
+/public/
