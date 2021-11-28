@@ -6,26 +6,6 @@ create table if not exists user_role
 );
 
 
-create table if not exists user_entity
-(
-    id       serial      not null,
-    name     varchar     not null,
-    surname  varchar     not null,
-    email    varchar     not null,
-    password varchar     not null,
-    role     varchar(50) not null,
-    primary key (id),
-    constraint fk_role foreign key (role) references user_role (role),
-    unique (email)
-);
-
-create table if not exists card_type
-(
-    id   serial       not null,
-    type varchar(100) not null,
-    unique (type)
-);
-
 create table if not exists language
 (
     id         serial primary key not null,
@@ -41,6 +21,27 @@ create table if not exists status
     language_id int                not null,
     unique (name),
     constraint fk_language foreign key (language_id) references language (id)
+);
+
+create table if not exists user_entity
+(
+    id       serial      not null,
+    name     varchar     not null,
+    surname  varchar     not null,
+    email    varchar     not null,
+    password varchar     not null,
+    role     varchar(50) not null,
+    status   varchar     not null,
+    primary key (id),
+    constraint fk_role foreign key (role) references user_role (role),
+    unique (email)
+);
+
+create table if not exists card_type
+(
+    id   serial       not null,
+    type varchar(100) not null,
+    unique (type)
 );
 
 create table if not exists currency
@@ -148,8 +149,18 @@ insert into status
 values (default, 'ЗАБЛОКОВАНИЙ', (select id from language where short_name like 'uk'));
 insert into payment_status
 values (default, 'PREPARED', (select id from language where short_name like 'en'));
+
 insert into payment_status
 values (default, 'SENT', (select id from language where short_name like 'en'));
+insert into payment_status
+values (default, 'BLOCKED', (select id from language where short_name like 'en'));
+
+
+insert into payment_status
+values (default, 'PENDING', (select id from language where short_name like 'en'));
+
+insert into payment_status
+values (default, 'APPROVED', (select id from language where short_name like 'en'));
 insert into payment_status
 values (default, 'DELETED', (select id from language where short_name like 'en'));
 insert into payment_status
@@ -157,7 +168,13 @@ values (default, 'ПІДГОТОВЛЕНИЙ', (select id from language where sh
 insert into payment_status
 values (default, 'ВІДПРВАЛЕНИЙ', (select id from language where short_name like 'uk'));
 insert into payment_status
+values (default, 'ОБРОБЛЮЄТЬСЯ', (select id from language where short_name like 'uk'));
+insert into payment_status
 values (default, 'ВИДАЛЕНИЙ', (select id from language where short_name like 'uk'));
+insert into payment_status
+values (default, 'ЗАБЛОКОВАНИЙ', (select id from language where short_name like 'uk'));
+insert into payment_status
+values (default, 'ПІДТВЕРДЖЕНИЙ', (select id from language where short_name like 'uk'));
 
 update account
 set amount = 65616.23
@@ -166,6 +183,14 @@ where account_number = 32;
 select *
 from account
 where user_login like 'c@c.c';
+
+select *
+from payment
+where sender = 'c@c.c';
+
+alter table user_entity
+    add column status varchar;
+
 
 /*insert into vault
 values (default)

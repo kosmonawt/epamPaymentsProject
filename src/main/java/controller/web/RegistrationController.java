@@ -68,7 +68,7 @@ public class RegistrationController extends HttpServlet {
         return matcher.matches();
     }
 
-    private String simpleRegistrationValidator(HttpServletRequest req) {
+/*    private String simpleRegistrationValidator(HttpServletRequest req) {
         String login = req.getParameter("login");
         if (login == null || login.isBlank()) {
             return "Invalid user login !";
@@ -78,5 +78,5 @@ public class RegistrationController extends HttpServlet {
         }
 
         return null;
-    }
+    }*/
 }
